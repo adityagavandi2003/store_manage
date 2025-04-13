@@ -26,14 +26,14 @@ In today's fast-paced business environment, managing a store and keeping track o
 
 ## Technical Stack: 
 - Built using Django for the backend.
-- HTML,TailwindCSS,JS for the frontend.
+- HTML , TailwindCSS , JS for the frontend.
 - SQLite for the database to ensure a robust and scalable solution.  
 
 ## 🛠️ Installation  
 
 1. Clone the repository:  
     ```bash  
-    git clone https://github.com/yourusername/store-manager.git  
+    git clone https://github.com/adityagavandi2003/store-manager.git  
     ```  
 2. Navigate to the project directory:  
     ```bash  
