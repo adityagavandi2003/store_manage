@@ -8,7 +8,6 @@ In today's fast-paced business environment, managing a store and keeping track o
 
 ### Key Highlights:  
 
-- **User-Centric Design**: Aiming for simplicity and usability to ensure a seamless experience for users of all technical backgrounds.  
 - **Scalable Architecture**: Designed to grow with your business, whether you're managing a small shop or a large chain of stores.  
 - **Data-Driven Insights**: Empowering businesses to make informed decisions with real-time data and analytics.  
 - **Secure Transactions**: Ensuring the safety of sensitive customer and financial data with robust security measures.  
@@ -24,6 +23,11 @@ In today's fast-paced business environment, managing a store and keeping track o
 - **Store Management**: Manage inventory, sales, and customer data with ease.  
 - **Finance Tracking**: Keep track of income, expenses, and profits in real-time.  
 - **Payment Gateway Integration**: Razorpay integration for smooth and secure payment processing.  
+
+## Technical Stack: 
+- Built using Django for the backend.
+- HTML,TailwindCSS,JS for the frontend.
+- SQLite for the database to ensure a robust and scalable solution.  
 
 ## 🛠️ Installation  
 
