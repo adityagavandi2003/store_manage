@@ -1,0 +1,192 @@
+{% extends "base.html" %}
+
+{% block title %}Account Settings{% endblock %}
+
+{% block section %}
+<div class="flex h-screen">
+    {% include "components/navbar.html" with home="home" %}
+    <div class="flex-1 flex flex-col overflow-y-auto bg-gray-100">
+        {% include "components/header.html" with head='Profile' %}
+
+        <main class="p-6">
+            <div class="max-w-3xl mx-auto space-y-8">
+                <div class="bg-white shadow-md rounded-lg overflow-hidden">
+                    <div class="px-4 py-5 sm:px-6 bg-gray-50 border-b border-gray-200">
+                        <h3 class="text-lg font-medium text-gray-900">
+                            Email Address
+                        </h3>
+                        <p class="mt-1 max-w-2xl text-sm text-gray-500">
+                            Manage your primary email address.
+                        </p>
+                    </div>
+                    <div class="px-4 py-5 sm:p-6">
+                        <form class="space-y-4">
+                            <div>
+                                <label for="current_email" class="block text-sm font-medium text-gray-700">
+                                    Current Email
+                                </label>
+                                <div class="mt-1">
+                                    <input type="email" name="current_email" id="current_email" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" value="john.doe@example.com" disabled>
+                                </div>
+                            </div>
+                            <div>
+                                <label for="new_email" class="block text-sm font-medium text-gray-700">
+                                    New Email
+                                </label>
+                                <div class="mt-1">
+                                    <input type="email" name="new_email" id="new_email" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" placeholder="new.email@example.com">
+                                </div>
+                            </div>
+                            <div>
+                                <label for="confirm_new_email" class="block text-sm font-medium text-gray-700">
+                                    Confirm New Email
+                                </label>
+                                <div class="mt-1">
+                                    <input type="email" name="confirm_new_email" id="confirm_new_email" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" placeholder="new.email@example.com">
+                                </div>
+                            </div>
+                            <div class="flex justify-end">
+                                <button type="button" class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                                    Cancel
+                                </button>
+                                <button type="submit" class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                                    Update Email
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="bg-white shadow-md rounded-lg overflow-hidden">
+                    <div class="px-4 py-5 sm:px-6 bg-gray-50 border-b border-gray-200">
+                        <h3 class="text-lg font-medium text-gray-900">
+                            Password
+                        </h3>
+                        <p class="mt-1 max-w-2xl text-sm text-gray-500">
+                            Change your account password.
+                        </p>
+                    </div>
+                    <div class="px-4 py-5 sm:p-6">
+                        <form class="space-y-4">
+                            <div>
+                                <label for="current_password" class="block text-sm font-medium text-gray-700">
+                                    Current Password
+                                </label>
+                                <div class="mt-1">
+                                    <input type="password" name="current_password" id="current_password" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md">
+                                </div>
+                            </div>
+                            <div>
+                                <label for="new_password" class="block text-sm font-medium text-gray-700">
+                                    New Password
+                                </label>
+                                <div class="mt-1">
+                                    <input type="password" name="new_password" id="new_password" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md">
+                                </div>
+                            </div>
+                            <div>
+                                <label for="confirm_password" class="block text-sm font-medium text-gray-700">
+                                    Confirm New Password
+                                </label>
+                                <div class="mt-1">
+                                    <input type="password" name="confirm_password" id="confirm_password" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md">
+                                </div>
+                            </div>
+                            <div class="flex justify-end">
+                                <button type="button" class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                                    Cancel
+                                </button>
+                                <button type="submit" class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                                    Update Password
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="bg-white shadow-md rounded-lg overflow-hidden">
+                    <div class="px-4 py-5 sm:px-6 bg-gray-50 border-b border-gray-200">
+                        <h3 class="text-lg font-medium text-gray-900">
+                            Two-Factor Authentication (Optional)
+                        </h3>
+                        <p class="mt-1 max-w-2xl text-sm text-gray-500">
+                            Enhance your account security.
+                        </p>
+                    </div>
+                    <div class="px-4 py-5 sm:p-6">
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm font-medium text-gray-900">Status</span>
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                    Disabled
+                                </span>
+                            </div>
+                            <p class="text-sm text-gray-600">
+                                Two-factor authentication is currently disabled. For increased security, we recommend enabling it.
+                            </p>
+                            <button type="button" class="inline-flex items-center justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
+                                Enable Two-Factor Authentication
+                            </button>
+                            <p class="text-sm text-gray-500">
+                                When enabled, you'll need a code from an authenticator app or SMS to log in.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white shadow-md rounded-lg overflow-hidden">
+                    <div class="px-4 py-5 sm:px-6 bg-gray-50 border-b border-gray-200">
+                        <h3 class="text-lg font-medium text-gray-900">
+                            Manage Sessions
+                        </h3>
+                        <p class="mt-1 max-w-2xl text-sm text-gray-500">
+                            View and manage your active login sessions.
+                        </p>
+                    </div>
+                    <div class="px-4 py-5 sm:p-6">
+                        <ul role="list" class="divide-y divide-gray-200">
+                            <li class="py-3 flex justify-between text-sm">
+                                <span class="font-medium text-gray-900">Desktop - Chrome on Windows</span>
+                                <span class="text-gray-500">Current session</span>
+                            </li>
+                            <li class="py-3 flex justify-between text-sm">
+                                <span class="font-medium text-gray-900">Mobile - Safari on iOS</span>
+                                <button type="button" class="ml-4 font-medium text-indigo-600 hover:text-indigo-800 focus:outline-none">
+                                    Logout
+                                </button>
+                            </li>
+                            <li class="py-3 flex justify-between text-sm">
+                                <span class="font-medium text-gray-900">Tablet - Chrome on Android</span>
+                                <button type="button" class="ml-4 font-medium text-indigo-600 hover:text-indigo-800 focus:outline-none">
+                                    Logout
+                                </button>
+                            </li>
+                        </ul>
+                        <div class="mt-4">
+                            <button type="button" class="inline-flex items-center justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                                Logout All Other Sessions
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white shadow-md rounded-lg overflow-hidden">
+                    <div class="px-4 py-5 sm:px-6 bg-gray-50 border-b border-gray-200">
+                        <h3 class="text-lg font-medium text-gray-900">
+                            Delete Account
+                        </h3>
+                    </div>
+                    <div class="px-4 py-5 sm:p-6">
+                        <p class="text-sm text-gray-600 mb-4">
+                            Permanently delete your account and all associated data. This action cannot be undone.
+                        </p>
+                        <button type="button" class="inline-flex items-center justify-center py-2 px-4 border border-red-500 shadow-sm text-sm font-medium rounded-md text-red-500 bg-white hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
+                            Delete My Account
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+{% endblock %}

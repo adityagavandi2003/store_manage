@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}Feedback{% endblock %}
+
+{% block section %}
+<div class="flex h-screen">
+    {% include "components/navbar.html" with report="report" %}
+    <div class="flex-1 flex flex-col overflow-y-auto bg-gray-100">
+        {% include "components/header.html" with head='Report' %}
+
+        <main class="p-6">
+            <div class="max-w-full mx-auto bg-white shadow-md rounded-lg overflow-hidden">
+                <div class="px-4 py-5 sm:px-6 bg-gray-50 border-b border-gray-200">
+                    <h1 class="text-xl font-semibold text-gray-900">
+                        Give us your report!
+                    </h1>
+                    <p class="mt-1 max-w-full text-sm text-gray-500">
+                        Your report helps us improve our services.
+                    </p>
+                </div>
+                <div class="px-4 py-5 sm:p-6">
+                    <form class="space-y-6" method='post'>
+                        {% csrf_token %}
+                        <div>
+                            <label for="id_type" class="block text-sm font-medium text-gray-700">
+                                What type of report do you have?
+                            </label>
+                            <div class="mt-1">
+                                <select id="id_type" name='type' required aria-invalid="true" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md">
+                                    <option value="">Select an option</option>
+                                    <option value="Bug Report">Bug Report</option>
+                                    <option value="Feature Request">Feature Request</option>
+                                    <option value="General Suggestion">General Suggestion</option>
+                                    <option value="Complaint">Complaint</option>
+                                    <option value="Praise">Praise</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="id_subject" class="block text-sm font-medium text-gray-700">
+                                Subject (Optional)
+                            </label>
+                            <div class="mt-1">
+                                <input type="text" maxlength='50' name="subject" id="id_subject" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="id_report" class="block text-sm font-medium text-gray-700">
+                                Your Report
+                            </label>
+                            <div class="mt-1">
+                                <textarea id="id_report" name="report" rows="5" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" placeholder="Please provide details about your feedback."></textarea>
+                            </div>
+                        </div>
+                        <div class="flex justify-end">
+                            <button type="button" class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                                Cancel
+                            </button>
+                            <button type="submit" class="ml-3 cursor-pointer inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                                Submit Report
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+{% endblock %}

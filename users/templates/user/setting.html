@@ -1,0 +1,183 @@
+{% extends "base.html" %}
+
+{% block title %}Settings{% endblock %}
+
+{% block section %}
+<div class="flex h-screen">
+    {% include "components/navbar.html" with home="home" %}
+    <div class="flex-1 flex flex-col overflow-y-auto bg-gray-100">
+        {% include "components/header.html" with head='Setting' %}
+
+        <main class="p-6">
+            <div class="max-w-3xl mx-auto space-y-6">
+
+                <div class="bg-white shadow-md rounded-lg overflow-hidden">
+                    <div class="px-4 py-5 sm:px-6 bg-gray-50 border-b border-gray-200">
+                        <h2 class="text-lg font-medium text-gray-900">
+                            Profile
+                        </h2>
+                        <p class="mt-1 max-w-2xl text-sm text-gray-500">
+                            Manage your public profile information.
+                        </p>
+                    </div>
+                    <div class="px-4 py-4 sm:px-6">
+                        <ul role="list" class="space-y-3">
+                            <li class="flex items-center justify-between">
+                                <span class="text-sm font-medium text-gray-900">Edit Profile</span>
+                                <a href="#" class="inline-flex items-center text-sm font-semibold text-indigo-600 hover:text-indigo-800">
+                                    Manage
+                                    <svg class="ml-2 h-5 w-5 text-indigo-500" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                        <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L12 11.414l-3.293 3.293a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                                    </svg>
+                                </a>
+                            </li>
+                            </ul>
+                    </div>
+                </div>
+
+                <div class="bg-white shadow-md rounded-lg overflow-hidden">
+                    <div class="px-4 py-5 sm:px-6 bg-gray-50 border-b border-gray-200">
+                        <h2 class="text-lg font-medium text-gray-900">
+                            Account
+                        </h2>
+                        <p class="mt-1 max-w-2xl text-sm text-gray-500">
+                            Manage your account details and security.
+                        </p>
+                    </div>
+                    <div class="px-4 py-4 sm:px-6">
+                        <ul role="list" class="space-y-3">
+                            <li class="flex items-center justify-between">
+                                <span class="text-sm font-medium text-gray-900">Email & Password</span>
+                                <a href="#" class="inline-flex items-center text-sm font-semibold text-indigo-600 hover:text-indigo-800">
+                                    Manage
+                                    <svg class="ml-2 h-5 w-5 text-indigo-500" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                        <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L12 11.414l-3.293 3.293a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                                    </svg>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="bg-white shadow-md rounded-lg overflow-hidden">
+                    <div class="px-4 py-5 sm:px-6 bg-gray-50 border-b border-gray-200">
+                        <h2 class="text-lg font-medium text-gray-900">
+                            Notifications
+                        </h2>
+                        <p class="mt-1 max-w-2xl text-sm text-gray-500">
+                            Configure your notification preferences.
+                        </p>
+                    </div>
+                    <div class="px-4 py-4 sm:px-6">
+                        <ul role="list" class="space-y-3">
+                            <li class="flex items-center justify-between">
+                                <span class="text-sm font-medium text-gray-900">Email Notifications</span>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" class="sr-only peer" checked>
+                                    <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-indigo-500 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-indigo-600"></span>
+                                </label>
+                            </li>
+                            <li class="flex items-center justify-between">
+                                <span class="text-sm font-medium text-gray-900">Push Notifications</span>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" class="sr-only peer">
+                                    <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-indigo-500 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-indigo-600"></span>
+                                </label>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="bg-white shadow-md rounded-lg overflow-hidden">
+                    <div class="px-4 py-5 sm:px-6 bg-gray-50 border-b border-gray-200">
+                        <h2 class="text-lg font-medium text-gray-900">
+                            Preferences
+                        </h2>
+                        <p class="mt-1 max-w-2xl text-sm text-gray-500">
+                            Customize your general application preferences.
+                        </p>
+                    </div>
+                    <div class="px-4 py-4 sm:px-6">
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <label for="theme" class="block text-sm font-medium text-gray-700">Theme</label>
+                                <select id="theme" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-auto sm:text-sm border-gray-300 rounded-md">
+                                    <option>System Default</option>
+                                    <option>Light</option>
+                                    <option>Dark</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white shadow-md rounded-lg overflow-hidden">
+                    <div class="px-4 py-5 sm:px-6 bg-gray-50 border-b border-gray-200">
+                        <h2 class="text-lg font-medium text-gray-900">
+                            Danger Zone
+                        </h2>
+                    </div>
+                    <div class="px-4 py-4 sm:px-6">
+                        <p class="text-sm text-gray-600 mb-3">
+                            Be careful with these actions as they might have permanent consequences.
+                        </p>
+                        <button class="inline-flex items-center justify-center py-2 px-4 border border-red-500 shadow-sm text-sm font-medium rounded-md text-red-500 bg-white hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
+                            Delete Account
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<script>
+    const themeSelect = document.getElementById('theme');
+
+    // Function to set the theme
+    function setTheme(theme) {
+        localStorage.setItem('theme', theme);
+        document.documentElement.className = ''; // Clear existing theme classes
+        if (theme === 'dark') {
+            document.documentElement.classList.add('dark');
+        } else if (theme === 'light') {
+            // No specific class needed for light mode with Tailwind's defaults
+        }
+    }
+
+    // Function to get the system's preferred color scheme
+    function getSystemTheme() {
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            return 'dark';
+        }
+        return 'light';
+    }
+
+    // Function to handle theme selection
+    function handleThemeChange() {
+        const selectedTheme = themeSelect.value;
+        if (selectedTheme === 'system') {
+            setTheme(getSystemTheme());
+        } else {
+            setTheme(selectedTheme);
+        }
+    }
+
+
+
+    // Event listeners for changes
+    themeSelect.addEventListener('change', handleThemeChange);
+
+    // Initial theme setup on page load
+    const storedTheme = localStorage.getItem('theme');
+    if (storedTheme) {
+        themeSelect.value = storedTheme;
+        setTheme(storedTheme);
+    } else {
+        themeSelect.value = 'system';
+        setTheme(getSystemTheme());
+    }
+
+</script>
+
+{% endblock %}

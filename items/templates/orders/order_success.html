@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Order Success{% endblock %}
+
+{% block section %}
+<section class="bg-gray-100 flex justify-center items-center mt-[50%]">
+    <div class="bg-white rounded-lg shadow-md p-8 max-w-md w-full text-center">
+        <div class="flex justify-center items-center mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+        </div>
+        <h2 class="text-2xl font-semibold text-gray-800 mb-2">Order Completed!</h2>
+        <p class="text-gray-600 mb-6">Thank you for your purchase. Your order has been processed successfully.</p>
+        <p class="text-sm text-gray-500">Redirecting to home page in <span id="countdown">5</span> seconds...</p>
+    </div>
+</section>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let countdown = 6;
+        const countdownDisplay = document.getElementById('countdown');
+
+        const audio = new Audio("{% static 'assets/audios/ding.mp3' %}");
+        audio.preload = 'auto';
+        // Function to play the audio and then redirect
+        function playAudioAndRedirect() {
+            audio.play().then(() => {
+                // Redirect to the home page after the audio has played
+                const intervalId = setInterval(() => {
+                    countdown--;
+                    countdownDisplay.textContent = countdown;
+                    if (countdown <= 0) {
+                        clearInterval(intervalId);
+                         window.location.href = "/";
+                    }
+                }, 1000); // 5000 milliseconds = 5 seconds
+               
+            }).catch(error => {
+                // Handle any errors that may occur during audio playback
+                console.error("Error playing audio:", error);
+                // Redirect anyway after 5 seconds
+                 const intervalId = setInterval(() => {
+                    countdown--;
+                    countdownDisplay.textContent = countdown;
+                    if (countdown <= 0) {
+                        clearInterval(intervalId);
+                         window.location.href = "/";
+                    }
+                }, 1000);
+               
+            });
+        }
+
+        // Call the function to start the process
+        playAudioAndRedirect();
+    });
+</script>
+
+{% endblock %}

@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block title %}My Reports{% endblock %}
+
+{% block section %}
+<div class="flex h-screen">
+    {% include "components/navbar.html" with report="report" %}
+    <div class="flex-1 flex flex-col overflow-y-auto bg-gray-100">
+        {% include "components/header.html" with head='Report' %}
+        <div class="container mx-auto p-4 md:p-8">
+            {% include "components/message.html" %}
+
+            <div class="bg-white shadow-md rounded-lg p-4 mb-6 md:p-6">
+                <h2 class="text-lg md:text-xl font-semibold mb-3 md:mb-4 text-gray-700">My reports</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-3 gap-4">
+                    <div class="bg-blue-100 rounded-md p-3 md:p-4">
+                        <p class="text-sm font-medium text-blue-500">Total Reports</p>
+                        <p class="text-lg md:text-xl font-semibold text-gray-800">{{total}}</p>
+                    </div>
+                    <div class="bg-green-100 rounded-md p-3 md:p-4">
+                        <p class="text-sm font-medium text-green-500">Solved</p>
+                        <p class="text-lg md:text-xl font-semibold text-gray-800">{{solved}}</p>
+                    </div>
+                    <div class="bg-red-100 rounded-md p-3 md:p-4">
+                        <p class="text-sm font-medium text-red-500">Not Solved</p>
+                        <p class="text-lg md:text-xl font-semibold text-gray-800">{{unsolved}}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white shadow-md rounded-lg overflow-hidden">
+                <h2
+                    class="text-lg md:text-xl font-semibold p-4 md:p-6 text-gray-700 border-b border-gray-200"
+                >
+                    Recent Reports
+                </h2>
+                <div class="overflow-x-auto pb-3">
+                    <table class="w-full table-auto">
+                        <thead class="bg-gray-100 text-gray-600 text-xs md:text-sm">
+                            <tr>
+                                <th class="px-2 py-1 md:px-3 md:py-2 text-left">Report ID</th>
+                                <th class="px-2 py-1 md:px-3 md:py-2 text-left">Type</th>
+                                <th class="px-2 py-1 md:px-3 md:py-2 text-left">Subject</th>
+                                <th class="px-2 py-1 md:px-3 md:py-2 text-left">Date</th>
+                                <th class="px-2 py-1 md:px-3 md:py-2 text-left">Solved</th>
+                                <th class="px-2 py-1 md:px-3 md:py-2 text-left">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-gray-700 text-xs md:text-sm mt-2">
+                            {% for report in reports %}
+                            <tr class='my-2'>
+                                <td class="px-2 py-1 md:px-3 md:py-2">{{ report.report_id }}</td>
+                                <td class="px-2 py-1 md:px-3 md:py-2">{{report.type}}</td>
+                                <td class="px-2 py-1 md:px-3 md:py-2">{{report.subject}}</td>
+                                <td class="px-2 py-1 md:px-3 md:py-2">{{report.report_at|date:"M d, Y"}}</td>
+                                <td class="px-2 py-1 md:px-3 md:py-2">
+                                    {% if report.is_solved %}
+                                    <span class="inline-flex items-center rounded-full bg-green-200 px-2 py-1 text-xs font-semibold text-green-700">Yes</span>
+                                    {% else %}
+                                    <span class="inline-flex items-center rounded-full bg-yellow-200 px-2 py-1 text-xs font-semibold text-yellow-800">No</span>
+                                    {% endif %}
+                                </td>
+                                <td class="px-2 py-1">
+                                    <a href='{% url "view_report" report.report_id %}' class="bg-blue-500 hover:bg-blue-700 text-white py-1 px-2 rounded text-xs">View</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Pagination Controls -->
+            <div class="pagination mt-4 md:flex md:justify-between md:items-center">
+                <div class="text-gray-600 text-sm">
+                Showing {{ reports.number }} of <span class="font-semibold">{{ reports.paginator.num_pages }}</span> page
+                </div>
+                <div class="mt-2 md:mt-0 space-x-2">
+                {% if reports.has_previous %}
+                    <a href="?page={{ reports.previous_page_number }}" class="bg-white hover:bg-gray-100 text-gray-700 font-semibold py-2 px-4 rounded shadow-sm text-sm focus:outline-none focus:ring focus:ring-blue-300">
+                        Previous
+                    </a>
+                {% endif %}
+                {% if reports.has_next %}
+                <a href="?page={{ reports.next_page_number }}" class="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow-sm text-sm focus:outline-none focus:ring focus:ring-blue-300">
+                    Next
+                </a>
+                {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}

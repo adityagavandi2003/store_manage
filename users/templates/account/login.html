@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load allauth account %}
+
+{% block title %}Login{% endblock %}
+
+{% block section %}
+<div class="min-h-screen bg-gray-100 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div class="sm:mx-auto sm:w-full sm:max-w-md">
+        <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+            Sign in to your account
+        </h2>
+        <p class="mt-2 text-center text-sm text-gray-600 max-w">
+            Or
+            <a href="{% url 'account_signup' %}" class="font-medium text-blue-600 hover:text-blue-500">
+                create an account
+            </a>
+        </p>
+    </div>
+
+    <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+        <div class="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+            <form class="space-y-6" method="POST" action="{% url 'account_login' %}">
+                {% csrf_token %}
+                {{ redirect_field }}
+
+                {% if form.non_field_errors %}
+                    <p class="text-red-500 text-sm">{{ form.non_field_errors.0 }}</p>
+                {% endif %}
+
+                <div>
+                    <label for="id_login" class="block text-sm font-medium text-gray-700">
+                        Email
+                    </label>
+                    <div class="mt-1">
+                        <input type="email" name="login" id="id_login"
+                            value="{{ form.login.value|default:'' }}"
+                            class="appearance-none rounded-md w-full px-3 py-2 border border-gray-300 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                            placeholder="Enter your email" required>
+                    </div>
+                    {% if form.login.errors %}
+                        <p class="text-red-500 text-sm mt-1">{{ form.login.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="id_password" class="block text-sm font-medium text-gray-700">
+                        Password
+                    </label>
+                    <div class="mt-1">
+                        <input type="password" name="password" id="id_password"
+                            class="appearance-none rounded-md w-full px-3 py-2 border border-gray-300 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                            placeholder="Enter your password" required>
+                    </div>
+                    {% if form.password.errors %}
+                        <p class="text-red-500 text-sm mt-1">{{ form.password.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <input id="remember" name="remember" type="checkbox"
+                            class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
+                        <label for="remember" class="ml-2 block text-sm text-gray-900">
+                            Remember me
+                        </label>
+                    </div>
+
+                    <div class="text-sm">
+                        <a href="{% url 'account_reset_password' %}" class="font-medium text-blue-600 hover:text-blue-500">
+                            Forgot your password?
+                        </a>
+                    </div>
+                </div>
+
+                <div>
+                    <button type="submit"
+                        class="w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:ring-indigo-500">
+                        Sign in
+                    </button>
+                </div>
+            </form>
+
+            {% if SOCIALACCOUNT_ENABLED %}
+                    {% include "socialaccount/snippets/login.html" %}
+            {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

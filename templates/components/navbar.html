@@ -1,0 +1,57 @@
+<div id="fordesign" class="bg-gray-800 text-white w-64 h-full flex-shrink-0 p-4 fixed md:relative
+  transform transition-transform duration-300 z-40
+      -translate-x-full md:translate-x-0">
+</div>
+<aside id="sidebar" class="bg-gray-800 flex flex-col justify-between text-white w-64 h-full flex-shrink-0 p-4 fixed 
+  transform transition-transform duration-300 z-40
+      -translate-x-full md:translate-x-0 z-10">
+  <div class="top">
+    <div class="mb-8">
+        <h1 class="text-2xl font-semibold">Store Manager</h1>
+    </div>
+    <nav>
+        <a href="{% url "home" %}" class="block py-2 px-4 hover:bg-gray-700 rounded {% if home %}font-semibold{% endif %}">Home</a>
+        <a href="{% url "dashboard" %}" class="block py-2 px-4 hover:bg-gray-700 rounded {% if dashboard %}font-semibold {% endif %}">Dashboard</a>
+        <a href="{% url "viewproduct" %}" class="block py-2 px-4 hover:bg-gray-700 rounded {% if product %}font-semibold{% endif %}">Products</a>
+        {% comment %} <a href="{% url "notifications" %}" class="block py-2 px-4 hover:bg-gray-700 rounded {% if notifications %}font-semibold{% endif %}">Notifications</a> {% endcomment %}
+        <a href="{% url "salesoverview" %}" class="block py-2 px-4 hover:bg-gray-700 rounded {% if salesoverview %}font-semibold{% endif %}">Sales Overview</a>
+        <a href="{% url "financedashboard" %}" class="block py-2 px-4 hover:bg-gray-700 rounded {% if finance %}font-semibold{% endif %}">Finance</a>
+        <a href="{% url "setting" %}" class="block py-2 px-4 hover:bg-gray-700 rounded {% if settings %}font-semibold{% endif %}">Settings</a>
+    </nav>
+  </div>
+  <div class="bottom mt-8 py-4 text-sm text-center">
+    <a href="{% url "report" %}" class="hover:text-blue-600">Report</a> | <a href="#" class="hover:text-blue-600">Privacy Policy</a>
+  </div>
+</aside>
+<div id="overlay" class="fixed inset-0 bg-black bg-opacity-30 z-30 hidden md:hidden" onclick="toggleSidebar()"></div>
+<script>
+  function handleSidebarVisibility() {
+      const sidebar = document.getElementById("sidebar");
+      const mobileWidth = 768; // adjust this value based on your mobile breakpoint
+    
+      if (window.innerWidth < mobileWidth) {
+        // If in mobile width, ensure -translate-x-full is present (hidden by default)
+        if (!sidebar.classList.contains("-translate-x-full")) {
+          sidebar.classList.add("-translate-x-full");
+        }
+      } else {
+        // If not in mobile width, ensure -translate-x-full is NOT present (visible by default)
+        if (sidebar.classList.contains("-translate-x-full")) {
+          sidebar.classList.remove("-translate-x-full");
+        }
+      }
+    }
+    
+    // Call the function on initial load
+    handleSidebarVisibility();
+    
+    // Call the function whenever the window is resized
+    window.addEventListener('resize', handleSidebarVisibility);
+    
+    function toggleSidebar() {
+      const sidebar = document.getElementById("sidebar");
+      const overlay = document.getElementById("overlay");
+      sidebar.classList.toggle("-translate-x-full");
+      overlay.classList.toggle("hidden");
+    }
+</script>

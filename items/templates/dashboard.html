@@ -1,0 +1,186 @@
+{% extends "base.html" %} 
+
+{% block title %}Dashboard{% endblock %} 
+
+{% block section %}
+<div class="flex h-screen">
+  {% include "components/navbar.html" with dashboard="dashboard" %}
+  <div class="flex-1 flex flex-col">
+    {% include "components/header.html" with head='Dashboard' %}
+
+    <main class="p-4 overflow-auto">
+      <div class="bg-white py-6 shadow-md rounded-lg p-3 mb-4">
+        <h3 class="text-base font-semibold mb-1 text-gray-800">
+          Month Finance Overview
+        </h3>
+        <div class="grid grid-cols-2 gap-1 md:grid-cols-4 mt-4 md:gap-2">
+          <div class="text-center">
+            <div class="text-gray-600 text-xs md:text-sm">Profit</div>
+            <div class="font-semibold text-green-600 text-xl md:text-2xl">₹1,250</div>
+          </div>
+          <div class="text-center">
+            <div class="text-gray-600 text-xs md:text-sm">Sales</div>
+            <div class="font-semibold text-blue-600 text-xl md:text-2xl">₹3,800</div>
+          </div>
+          <div class="text-center">
+            <div class="text-gray-600 text-xs md:text-sm">Expenses</div>
+            <div class="font-semibold text-red-600 text-xl md:text-2xl">₹2,550</div>
+          </div>
+          <div class="text-center">
+            <div class="text-gray-600 text-xs md:text-sm">Balance</div>
+            <div class="font-semibold text-gray-800 text-xl md:text-2xl">₹1,250</div>
+          </div>
+        </div>
+        <a
+          href="{% url "financedashboard" %}"
+          class="block mt-4 text-xs md:text-sm text-blue-500 hover:underline text-center"
+          >View Full Finance Report</a
+        >
+      </div>
+
+      <div class="bg-white shadow-md rounded-lg p-3">
+        <div
+          class="flex flex-row justify-between items-center mb-2"
+        >
+          <h2 class="text-base font-semibold mb-1 sm:mb-0">Products</h2>
+          <a
+            href='{% url "addproduct" %}'
+            class="bg-indigo-600 text-white px-3 py-1 cursor-pointer rounded-md hover:bg-indigo-700 text-xs"
+            >Add Product</a
+          >
+        </div>
+
+        <div class="overflow-x-auto bg-white rounded-lg shadow p-2">
+          {% if products %}
+          <table class="w-full divide-y divide-gray-200 min-w-[600px]">
+            <thead class="bg-gray-100">
+              <tr>
+                <th
+                  class="px-1 py-2 text-left text-xs font-medium text-gray-500 uppercase"
+                >
+                  Image
+                </th>
+                <th
+                  class="px-1 py-2 text-left text-xs font-medium text-gray-500 uppercase"
+                >
+                  Name
+                </th>
+                <th
+                  class="px-1 py-2 text-left text-xs font-medium text-gray-500 uppercase"
+                >
+                  Sell
+                </th>
+                <th
+                  class="px-1 py-2 text-left text-xs font-medium text-gray-500 uppercase"
+                >
+                  Purchase
+                </th>
+                <th
+                  class="px-1 py-2 text-left text-xs font-medium text-gray-500 uppercase"
+                >
+                  Stock
+                </th>
+                <th
+                  class="px-1 py-2 text-left text-xs font-medium text-gray-500 uppercase"
+                >
+                  Rack
+                </th>
+                <th
+                  class="px-1 py-2 text-left text-xs font-medium text-gray-500 uppercase hidden sm:table-cell"
+                >
+                  Date
+                </th>
+                <th
+                  class="px-1 py-2 text-left text-xs font-medium text-gray-500 uppercase"
+                >
+                  Action
+                </th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+              {% for product in products %}
+              <tr>
+                <td class="px-1 py-2">
+                  {% if product.images %}
+                  <img
+                    src="{{ product.images.url }}"
+                    alt="product image"
+                    class="h-10 w-10 object-cover rounded-md"
+                  />
+                  {% else %}
+                  <span class="text-[0.7rem] text-gray-500">No Image</span> 
+                  {% endif %}
+                </td>
+                <td class="px-1 py-2 text-xs font-medium text-gray-700">
+                  {{ product.name }}
+                </td>
+                <td class="px-1 py-2 text-xs text-gray-600">
+                  ₹{{ product.price }}
+                </td>
+                <td class="px-1 py-2 text-xs text-gray-600">
+                  ₹{{ product.purchase_price }}
+                </td>
+                <td class="px-1 py-2 text-xs text-gray-600">
+                  {{ product.stock }}
+                </td>
+                <td class="px-1 py-2 text-xs text-gray-600">
+                  {{ product.rack }}
+                </td>
+                <td
+                  class="px-1 py-2 text-xs text-gray-500 hidden sm:table-cell"
+                >
+                  {{ product.created_at|date:"M d, Y" }}
+                </td>
+                <td class="px-1 py-2 whitespace-nowrap">
+                  <div class="flex space-x-1">
+                    <a
+                      href='{% url "editproduct" product.product_id %}'
+                      class="text-blue-600 hover:underline cursor-pointer text-sm mr-2"
+                      >Edit</a
+                    >
+                    <a
+                      href='{% url "deleteproduct" product.product_id %}'
+                      class="text-red-600 ml-2 hover:underline cursor-pointer text-sm"
+                      >Delete</a
+                    >
+                  </div>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% else %}
+          <p class="text-xs text-gray-500">No products available.</p>
+          {% endif %}
+        </div>
+        <div class="text-right mt-1">
+          <a
+            href='{% url "viewproduct" %}'
+            class="text-blue-600 hover:underline cursor-pointer transition duration-200 text-xs"
+            >View all</a
+          >
+        </div>
+
+        <!-- Pagination Controls -->
+        <div class="pagination mt-4 md:flex md:justify-between md:items-center">
+          <div class="text-gray-600 text-sm">
+          Showing {{ products.number }} of <span class="font-semibold">{{ products.paginator.num_pages }}</span> page
+          </div>
+          <div class="mt-2 md:mt-0 space-x-2">
+          {% if products.has_previous %}
+              <a href="?page={{ products.previous_page_number }}" class="bg-white hover:bg-gray-100 text-gray-700 font-semibold py-2 px-4 rounded shadow-sm text-sm focus:outline-none focus:ring focus:ring-blue-300">
+                  Previous
+              </a>
+          {% endif %}
+          {% if products.has_next %}
+          <a href="?page={{ products.next_page_number }}" class="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow-sm text-sm focus:outline-none focus:ring focus:ring-blue-300">
+              Next
+          </a>
+          {% endif %}
+          </div>
+      </div>
+      </div>
+    </main>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Report Details</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 flex justify-center items-center min-h-screen">
+    <div class="bg-white rounded-lg shadow-md p-8 w-full max-w-md">
+        <h2 class="text-xl font-semibold text-gray-800 mb-4">Feedback Report Details</h2>
+
+        <div class="overflow-x-auto">
+            <table class="min-w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
+                    <tr>
+                        <th scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                            Report ID
+                        </th>
+                        <td class="px-6 py-3">
+                            #REPORT123
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                            Feedback Type
+                        </th>
+                        <td class="px-6 py-3">
+                            Bug Report
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                            Subject (Optional)
+                        </th>
+                        <td class="px-6 py-3">
+                            UI Issue on Dashboard
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-normal dark:text-white">
+                            Report Details
+                        </th>
+                        <td class="px-6 py-3">
+                            The button on the top right of the dashboard is overlapping with the user profile icon on smaller screens. This makes it difficult to click the profile icon.
+                        </td>
+                    </tr>
+                    </tbody>
+            </table>
+        </div>
+
+        <div class="mt-6 flex justify-end gap-2">
+            <button class="px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 focus:outline-none focus:ring focus:ring-gray-300">
+                Back
+            </button>
+            <button class="px-4 py-2 text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring focus:ring-indigo-300">
+                Mark as Resolved
+            </button>
+        </div>
+    </div>
+</body>
+</html>

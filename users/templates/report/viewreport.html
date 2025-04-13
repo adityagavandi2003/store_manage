@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}View Report{% endblock %}
+
+{% block section %}
+<div class="flex h-screen">
+    {% include "components/navbar.html" with report="report" %}
+    <div class="flex-1 flex flex-col overflow-y-auto bg-gray-100">
+        {% include "components/header.html" with head='Report' %}
+        <div class="container mx-auto p-4 md:p-8">
+            {% include "components/message.html" %}
+            <div class="bg-white rounded-lg shadow-md p-8 w-full">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4">Feedback Report Details</h2>
+        
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-left text-gray-500">
+                        <tbody class="bg-white divide-y divide-gray-200 ">
+                            <tr>
+                                <th scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap ">
+                                    Report ID
+                                </th>
+                                <td class="px-6 py-3">
+                                    {{report.report_id}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap">
+                                    Report Type
+                                </th>
+                                <td class="px-6 py-3">
+                                    {{report.type}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-nowrap">
+                                    Subject (Optional)
+                                </th>
+                                <td class="px-6 py-3">
+                                    {{report.subject}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-normal">
+                                    Report Details
+                                </th>
+                                <td class="px-6 py-3">
+                                    {{report.report}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row" class="px-6 py-3 font-medium text-gray-900 whitespace-normal">
+                                    Report Solved
+                                </th>
+                                <td class="px-6 py-3">
+                                    {% if report.is_solved %}<b class='text-green-500'>Yes</b>{% else %}<b class='text-yellow-500'>NO</b>{% endif %}
+                                </td>
+                            </tr>
+                            </tbody>
+                    </table>
+                </div>
+        
+                <div class="mt-6 flex justify-end gap-2">
+                    <button onclick="window.location.href = '{% url "dashboard" %}'" class="px-4 py-2 text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 focus:outline-none focus:ring focus:ring-gray-300">
+                        Back
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

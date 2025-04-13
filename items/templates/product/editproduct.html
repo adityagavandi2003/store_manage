@@ -1,0 +1,183 @@
+{% extends "base.html" %} 
+
+{% block title %}Edit Product{% endblock %} 
+
+{% block section %}
+<div class="flex h-screen">
+  {% include "components/navbar.html" %}
+  <div class="flex-1 flex flex-col">
+    {% include "components/header.html"  with head='Dashboard' %}
+
+    <main class="p-6 overflow-auto">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-lg font-semibold">Edit Product</h2>
+        <a
+          href='{% url "dashboard" %}'
+          class="bg-indigo-600 text-white px-4 py-2 cursor-pointer rounded-md hover:bg-indigo-700"
+          >Go to Dashboard</a
+        >
+      </div>
+
+      <div class="grid grid-cols-1 gap-6">
+        <!-- Form container -->
+        <form
+          method="post"
+          enctype="multipart/form-data"
+          class="rounded-md shadow bg-white p-4 flex flex-col md:flex-row gap-6 w-full"
+        >
+          {% csrf_token %}
+
+          <!-- Left: Image Upload -->
+          <div class="md:w-1/3 space-y-4">
+            <label class="block text-gray-700 font-medium" for="id_images"
+              >Product Image</label
+            >
+
+            <div class="mt-2">
+              {% if product.images %}
+              <img
+                id="imagePreview"
+                src="{{ product.images.url }}"
+                alt="Current Image"
+                class="max-w-full rounded-md"
+              />
+              {% else %}
+              <img
+                id="imagePreview"
+                src="#"
+                alt="Image Preview"
+                class="max-w-full rounded-md hidden"
+              />
+              {% endif %}
+            </div>
+
+              <input
+              type="file"
+              id="id_images"
+              name="images"
+              accept="image/*"
+              class="w-full border border-gray-300 rounded-md file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
+              onchange="previewImage(event)"
+            />
+          </div>
+
+          <!-- Right: Product Details -->
+          <div class="md:w-full space-y-4">
+            <div>
+              <label class="block text-gray-700 font-medium mb-1" for="id_name"
+                >Product Name</label
+              >
+              <input
+                type="text"
+                id="id_name"
+                name="name"
+                value="{{ product.name }}"
+                maxlength="50"
+                class="w-full px-4 py-2 border border-gray-300 rounded-md"
+                required
+              />
+            </div>
+
+            <div>
+              <label class="block text-gray-700 font-medium mb-1" for="id_price"
+                >Sell Price (₹)</label
+              >
+              <input
+                type="text"
+                id="id_price"
+                name="price"
+                value="{{ product.price }}"
+                class="w-full px-4 py-2 border border-gray-300 rounded-md"
+                required
+              />
+            </div>
+            
+            <div>
+              <label class="block text-gray-700 font-medium mb-1" for="id_price"
+                >Purchase Price (₹)</label
+              >
+              <input
+                type="text"
+                id="id_purchase_price"
+                name="purchase_price"
+                value="{{ product.purchase_price }}"
+                class="w-full px-4 py-2 border border-gray-300 rounded-md"
+                required
+              />
+            </div>
+
+            <div>
+              <label class="block text-gray-700 font-medium mb-1" for="id_stock"
+                >Stock Quantity</label
+              >
+              <input
+                type="text"
+                id="id_stock"
+                name="stock"
+                value="{{ product.stock }}"
+                class="w-full px-4 py-2 border border-gray-300 rounded-md"
+                required
+              />
+            </div>
+
+            <div>
+              <label class="block text-gray-700 font-medium mb-1" for="id_rack"
+                >Rack</label
+              >
+              <input
+                type="text"
+                id="id_rack"
+                name="rack"
+                value="{{ product.rack }}"
+                class="w-full px-4 py-2 border border-gray-300 rounded-md"
+                required
+              />
+            </div>
+
+            <div>
+              <button
+                type="submit"
+                class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 transition duration-200"
+              >
+                Save Changes
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script>
+  const fileInput = document.getElementById("id_images");
+  const preview = document.getElementById("imagePreview");
+
+  fileInput.addEventListener("change", function () {
+    const file = this.files[0];
+
+    if (file) {
+      const reader = new FileReader();
+
+      reader.addEventListener("load", function () {
+        preview.setAttribute("src", this.result);
+        preview.classList.remove("hidden");
+      });
+
+      reader.readAsDataURL(file);
+    } else {
+      preview.classList.add("hidden");
+      preview.setAttribute("src", "#");
+    }
+  });
+
+  const form = document.querySelector("form");
+  const submitBtn = document.getElementById("submitBtn");
+
+  form.addEventListener("submit", () => {
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Submitting...";
+    submitBtn.classList.add("opacity-50", "cursor-not-allowed");
+  });
+</script>
+{% endblock %}
