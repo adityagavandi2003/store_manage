@@ -1,0 +1,49 @@
+{% extends "allauth/layouts/entrance.html" %}
+{% load i18n %}
+{% load allauth %}
+{% block head_title %}
+    {% translate "Account Inactive" %}
+{% endblock head_title %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-lg border border-gray-200">
+        <div class="text-center">
+            <h2 class="text-2xl font-semibold text-gray-900">
+                {% translate "Account Inactive" %}
+            </h2>
+            <p class="mt-2 text-gray-600">
+                {% translate "Your account is currently inactive." %}
+            </p>
+        </div>
+
+        <div class="rounded-md bg-yellow-50 border border-yellow-200 p-4">
+            <div class="flex">
+                <div class="flex-shrink-0">
+                    <svg class="h-5 w-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.477a1 1 0 01-.543 1.603H4.118a1 1 0 01-.543-1.602L8.257 3.099zM7 16a1 1 0 112 0v-4a1 1 0 11-2 0v4zm3-8a1 1 0 00-1 1v.008a1 1 0 001 1h.008a1 1 0 001-1V9a1 1 0 00-1-1H10z" clip-rule="evenodd" />
+                    </svg>
+                </div>
+                <div class="ml-3">
+                    <p class="text-sm text-yellow-700">
+                        {% blocktrans %}
+                            Your account has not yet been activated.  You may need to:
+                        {% endblocktrans %}
+                    </p>
+                    <ul class="list-disc list-inside mt-2 text-sm text-yellow-700">
+                        <li>Check your email for an activation link.</li>
+                        <li>Contact an administrator if you believe this is an error.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center">
+            <a href="{% url 'account_contact' %}" class="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-blue-700 bg-blue-100 hover:bg-blue-200">
+                {% translate "Contact Support" %}
+                 <svg class="-mr-1 ml-3 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock content %}

@@ -10,8 +10,11 @@
       rel="stylesheet"
     />
   </head>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Bowlby+One+SC&family=Noto+Serif:ital,wght@0,100..900;1,100..900&family=Oswald:wght@600&family=Pacifico&family=Parisienne&family=Source+Sans+3:wght@200..900&family=Teko:wght@300&display=swap');
+    </style>
   <body class="bg-gray-100 font-sans relative">
-    {% include "components/message.html" %}
+    {% include "components/message.html" %} 
     {% block section %}{% endblock %}
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
   </body>

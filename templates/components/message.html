@@ -16,12 +16,18 @@
 
 
 {% if messages %}
-  <div id="toast" class="absolute top-4 right-6 bg-green-500 text-white px-6 py-3 rounded shadow-lg z-50 animate-slide-in hidden">
-    {% for message in messages %}
+  {% for message in messages %}
+    <div id="toast" class="absolute top-4 right-6 
+      {% if 'success' in message.tags %}bg-green-500 
+      {% elif 'warning' in message.tags %}bg-yellow-500 
+      {% else %}bg-red-500 
+      {% endif %}
+      text-white px-6 py-3 rounded shadow-lg z-50 animate-slide-in hidden">
       {{ message }}
-    {% endfor %}
-  </div>
+    </div>
+  {% endfor %}
 {% endif %}
+
 
 <script>
   document.addEventListener("DOMContentLoaded", function () {

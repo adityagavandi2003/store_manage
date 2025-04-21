@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load indian_format %}
+{% block title %}Record of {{khata.customer}}{% endblock %}
+
+{% block section %}
+<div class="flex h-screen">
+    {% include "components/navbar.html" with khatabook="khatabook" %}
+    <div class="flex-1 flex flex-col">
+        {% include "components/header.html" with head='Khata Book' %}
+        <div class="container mx-auto p-8 bg-white shadow-md rounded-md">
+            <div class="top border-b flex justify-between items-center">
+                <div class="pb-4">
+                    <h2 class="text-lg font-semibold text-gray-700 mb-2">Customer Information</h2>
+                    <p class="text-gray-600"><strong>Name:</strong> {{khata.customer}}</p>
+                    <p class="text-gray-600"><strong>Phone:</strong> +91 {{khata.customer_phone}}</p>
+                </div>
+                <div class="pt-4">
+                    <div class="flex justify-end">
+                        <span class="text-lg font-semibold text-gray-800 mr-4">Total:</span>
+                        <span class="text-lg font-semibold text-gray-800">{{khata.total_due|indian_currency}}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="mb-6">
+                <h2 class="text-lg font-semibold text-gray-700 mb-2">Order Items</h2>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full bg-white rounded-md shadow">
+                        <thead class="bg-gray-100">
+                            <tr>
+                                <th class="py-2 px-4 text-left text-gray-600 font-semibold">name</th>
+                                <th class="py-2 px-4 text-right text-gray-600 font-semibold">Quantity</th>
+                                <th class="py-2 px-4 text-right text-gray-600 font-semibold">Price</th>
+                                <th class="py-2 px-4 text-right text-gray-600 font-semibold">Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in orders %}
+                                <tr>
+                                    <td class="py-2 px-4 border-b text-right text-gray-700">{{order.product_name}}</td>
+                                    <td class="py-2 px-4 border-b text-right text-gray-700">{{ order.product_quantity }}</td>
+                                    <td class="py-2 px-4 border-b text-right text-gray-700">{{ order.product_price }}</td>
+                                    <td class="py-2 px-4 border-b text-right text-gray-700">{{order.product_subtotal}}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>  
+</dib>
+{% endblock %}

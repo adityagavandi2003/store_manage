@@ -24,7 +24,7 @@
                         <ul role="list" class="space-y-3">
                             <li class="flex items-center justify-between">
                                 <span class="text-sm font-medium text-gray-900">Edit Profile</span>
-                                <a href="#" class="inline-flex items-center text-sm font-semibold text-indigo-600 hover:text-indigo-800">
+                                <a href="{% url "profile" request.user.username %}#storeNameBlock" class="inline-flex items-center text-sm font-semibold text-indigo-600 hover:text-indigo-800">
                                     Manage
                                     <svg class="ml-2 h-5 w-5 text-indigo-500" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                         <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L12 11.414l-3.293 3.293a1 1 0 01-1.414 0z" clip-rule="evenodd" />
@@ -48,7 +48,7 @@
                         <ul role="list" class="space-y-3">
                             <li class="flex items-center justify-between">
                                 <span class="text-sm font-medium text-gray-900">Email & Password</span>
-                                <a href="#" class="inline-flex items-center text-sm font-semibold text-indigo-600 hover:text-indigo-800">
+                                <a href="{% url "profile" request.user.username %}#emailblock" class="inline-flex items-center text-sm font-semibold text-indigo-600 hover:text-indigo-800">
                                     Manage
                                     <svg class="ml-2 h-5 w-5 text-indigo-500" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                         <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L12 11.414l-3.293 3.293a1 1 0 01-1.414 0z" clip-rule="evenodd" />
@@ -73,16 +73,16 @@
                             <li class="flex items-center justify-between">
                                 <span class="text-sm font-medium text-gray-900">Email Notifications</span>
                                 <label class="relative inline-flex items-center cursor-pointer">
-                                    <input type="checkbox" class="sr-only peer" checked>
-                                    <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-indigo-500 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-indigo-600"></span>
-                                </label>
+                                    <input type="checkbox" class="sr-only peer">
+                                    <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-indigo-500 rounded-full peer dark:bg-gray-700 peer-checked:bg-green-600 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></span>
+                                </label>                                
                             </li>
                             <li class="flex items-center justify-between">
                                 <span class="text-sm font-medium text-gray-900">Push Notifications</span>
                                 <label class="relative inline-flex items-center cursor-pointer">
                                     <input type="checkbox" class="sr-only peer">
-                                    <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-indigo-500 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-indigo-600"></span>
-                                </label>
+                                    <span class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-indigo-500 rounded-full peer dark:bg-gray-700 peer-checked:bg-green-600 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></span>
+                                </label>                                
                             </li>
                         </ul>
                     </div>
@@ -121,7 +121,7 @@
                         <p class="text-sm text-gray-600 mb-3">
                             Be careful with these actions as they might have permanent consequences.
                         </p>
-                        <button class="inline-flex items-center justify-center py-2 px-4 border border-red-500 shadow-sm text-sm font-medium rounded-md text-red-500 bg-white hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
+                        <button id='deleteAccountButton' class="inline-flex items-center justify-center py-2 px-4 border border-red-500 shadow-sm text-sm font-medium rounded-md text-red-500 bg-white hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
                             Delete Account
                         </button>
                     </div>
@@ -131,6 +131,7 @@
     </div>
 </div>
 
+{% include "components/delete_account_confirm.html" %}
 <script>
     const themeSelect = document.getElementById('theme');
 

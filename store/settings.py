@@ -37,10 +37,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize', # 
+    
     # apps
     'users',
     'items',
     'finance',
+    'khatabook',
+    'phonebook',
 
     # allauth
     'allauth',
@@ -49,6 +53,8 @@ INSTALLED_APPS = [
     # Add providers
     'allauth.socialaccount.providers.google',# Google OAuth
     'allauth.socialaccount.providers.facebook',# facebook
+
+    'chartjs',
 ]
 
 SITE_ID = 1
@@ -154,7 +160,7 @@ ACCOUNT_LOGIN_ON_SIGNUP = True
 
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 LOGIN_REDIRECT_URL = "/dashboard/"
-ACCOUNT_LOGOUT_REDIRECT_URL = "/accounts/login/"
+ACCOUNT_LOGOUT_REDIRECT_URL = "/index/storesathi/"
 
 ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 3
 ACCOUNT_EMAIL_CONFIRMATION_COOLDOWN = 180  # resend emails
@@ -174,15 +180,34 @@ AUTHENTICATION_BACKENDS = [
 
 # Use These:
 ACCOUNT_LOGIN_METHODS = {'email'}
-ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*']
+ACCOUNT_SIGNUP_FIELDS = ['username', 'first_name', 'last_name', 'email*', 'password1', 'password2']
+
+
+ACCOUNT_FORMS = {
+    'signup': 'users.forms.CustomSignupForm',
+}
+
 
 # Email backend (for dev)
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-
 ACCOUNT_RATE_LIMITS = {
-    "confirm_email": "1/m",  # 1 request per minute
+    'confirm_email': '1/m',  # example: 1 email confirmation per minute
 }
 
 
+# razorpay
+from decouple import config
+RAZORPAY_KEY_ID =config("RAZORPAY_KEY_ID")
+RAZORPAY_SECREATE_KEY = config("RAZORPAY_SECREATE_KEY")
+RAZORPAY_CALLBACK_URL = config('RAZORPAY_CALLBACK_URL')
 
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'APP': {
+            'client_id':config("GOOGLE_CLIENT_ID"),
+            'secret':config("GOOGLE_SECRET_KEY"),
+            'key': ''
+        }
+    }
+}

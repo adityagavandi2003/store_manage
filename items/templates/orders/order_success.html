@@ -3,8 +3,8 @@
 {% block title %}Order Success{% endblock %}
 
 {% block section %}
-<section class="bg-gray-100 flex justify-center items-center mt-[50%]">
-    <div class="bg-white rounded-lg shadow-md p-8 max-w-md w-full text-center">
+<section class="bg-gray-100 flex justify-center items-center min-h-screen">
+    <div class="bg-white flex justify-center items-center flex-col rounded-lg shadow-md p-8 max-w-md w-full text-center">
         <div class="flex justify-center items-center mb-4">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -20,7 +20,7 @@
         let countdown = 6;
         const countdownDisplay = document.getElementById('countdown');
 
-        const audio = new Audio("{% static 'assets/audios/ding.mp3' %}");
+        const audio = new Audio("/static/assets/audios/ding.mp3");
         audio.preload = 'auto';
         // Function to play the audio and then redirect
         function playAudioAndRedirect() {

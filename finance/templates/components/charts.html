@@ -1,0 +1,157 @@
+{% load static %}
+{% load indian_format %}
+<div class="bg-white shadow-md rounded-lg p-4 md:p-6 mb-6 md:mb-8">
+    <div class="head flex justify-between items-center">
+        <h3 class="text-lg md:text-xl font-semibold mb-3 md:mb-4 text-gray-800">Financial Overview</h3>
+        <select id="graph" name='graph' class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block sm:w-auto sm:text-sm rounded-md border-gray-300">
+            <option value="bar">Bar</option>
+            <option value="line">Line</option>
+        </select>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+            <div class="flex items-center justify-between mb-3">
+                <h4 class="text-md font-semibold text-gray-700">Revenue</h4>
+                <span class="font-medium text-sm {% if month.profit|stringformat:"s"|slice:":1" == '-' %}text-red-600{% else %}text-green-600{% endif %}">{% if month.profit|stringformat:"s"|slice:":1" == '-' %}{{month.profit_margin}}{% else %}+{{month.profit_margin}}{% endif %}%</span>
+            </div>
+            <div class="text-2xl font-bold text-blue-700 mb-4">{{month.profit|indian_currency}}</div>
+            <div class="w-full max-w-[600px] h-[400px] mx-auto relative">
+                <canvas id="revenueChart"></canvas>
+            </div>
+            <small class='text-center text-xs text-red-600'>X-axis represents the date, and Y-axis represents the amount in rupees</small>
+        </div>
+        <div>
+            <div class="flex items-center justify-between mb-3">
+                <h4 class="text-md font-semibold text-gray-700">Top Products</h4>
+                <span class="text-red-500 font-medium text-sm">-12.5%</span>
+            </div>
+            <div class="text-2xl font-bold text-green-500 mb-4">{% if month.profit %}{{ order|length }}{% endif %}</div>
+            <div class="w-full max-w-[600px] h-[400px] mx-auto relative">
+                <canvas id="productsChart"></canvas>
+            </div>
+            <small class='text-center text-xs text-red-600'>X-axis represents the Product, and Y-axis represents the Quantity</small>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.0.min.js"></script>
+<script type="text/javascript" src="{% static 'js/Chart.min.js' %}"></script>
+<script type="text/javascript">
+    let revenueChartInstance = null;
+    let productChartInstance = null;
+
+    const graph = document.getElementById('graph');
+
+    if (graph) {
+        handleGraphType(graph.value); // Initial load
+
+        graph.addEventListener('change', (e) => {
+            if (e && e.target) {
+                handleGraphType(e.target.value);
+            }
+        });
+    }
+
+    function handleGraphType(type) {
+        // Revenue Chart
+        fetch('{% url "revenuechart" %}')
+            .then(response => response.json())
+            .then(data => {
+                const ctx = document.getElementById("revenueChart").getContext("2d");
+
+                if (revenueChartInstance) {
+                    revenueChartInstance.destroy();
+                }
+
+                revenueChartInstance = new Chart(ctx, {
+                    type: type,
+                    data: {
+                        labels: data.labels,
+                        datasets: data.datasets
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        interaction: {
+                            mode: 'index',
+                            intersect: false
+                        },
+                        plugins: {
+                            tooltip: {
+                                enabled: true
+                            },
+                            legend: {
+                                position: 'top',
+                                labels: {
+                                    color: '#000', // Legend text color
+                                    font: {
+                                        weight: 'bold'
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            })
+            .catch(error => console.error('Error loading revenue chart data:', error));
+
+        // Product Chart
+        fetch('{% url "productchart" %}')
+            .then(response => response.json())
+            .then(productData => {
+                const ctx = document.getElementById("productsChart").getContext("2d");
+
+                if (productChartInstance) {
+                    productChartInstance.destroy();
+                }
+
+                productChartInstance = new Chart(ctx, {
+                    type: type,
+                    data: productData,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        interaction: {
+                            mode: 'index',
+                            intersect: false
+                        },
+                        plugins: {
+                            tooltip: {
+                                enabled: true
+                            },
+                            legend: {
+                                position: 'top',
+                                labels: {
+                                    color: '#000',
+                                    font: {
+                                        weight: 'bold'
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Quantity Sold'
+                                }
+                            },
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Product Name'
+                                }
+                            }
+                        }
+                    }
+                });
+            })
+            .catch(error => console.error('Error loading product chart data:', error));
+    }
+</script>

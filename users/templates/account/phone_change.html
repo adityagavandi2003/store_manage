@@ -1,0 +1,80 @@
+{% extends "account/base_manage_phone.html" %}
+{% load i18n %}
+{% load allauth %}
+{% block head_title %}
+    {% trans "Change Phone" %}
+{% endblock head_title %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-lg border border-gray-200">
+        <div>
+            <h2 class="text-2xl font-semibold text-gray-900">
+                {% trans "Change Phone" %}
+            </h2>
+        </div>
+
+        <form method="POST" action="{% url 'account_change_phone' %}" class="space-y-6">
+            {% csrf_token %}
+            {% if phone %}
+                <div>
+                    <label for="current_phone" class="block text-sm font-medium text-gray-700">
+                        {% translate "Current phone" %}:
+                    </label>
+                    <input
+                        id="current_phone"
+                        type="tel"
+                        value="{{ phone }}"
+                        disabled
+                        class="mt-1 block w-full py-3 px-4 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    />
+                    {% if not phone_verified %}
+                        <div class="mt-2 flex items-center justify-between">
+                            <p class="text-xs text-yellow-600">
+                                {% blocktranslate %}Your phone number is still pending verification.{% endblocktranslate %}
+                            </p>
+                            <button type="submit" form="verify-phone"
+                                    class="bg-gray-100 text-gray-800 hover:bg-gray-200 py-2 px-3 rounded-md text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                {% trans 'Re-send Verification' %}
+                            </button>
+                        </div>
+                    {% endif %}
+                </div>
+            {% endif %}
+
+            <div>
+                <label for="{{ form.phone.auto_id }}" class="block text-sm font-medium text-gray-700">
+                    {% translate "Change to" %}:
+                </label>
+                <input
+                    id="{{ form.phone.auto_id }}"
+                    name="phone"
+                    type="tel"
+                    value="{{ form.phone.value }}"
+                    class="mt-1 block w-full py-3 px-4 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    placeholder="Enter new phone number"
+                />
+                {% if form.phone.errors %}
+                    {% for error in form.phone.errors %}
+                        <p class="text-xs text-red-600 mt-1">{{ error }}</p>
+                    {% endfor %}
+                {% endif %}
+            </div>
+
+            <div>
+                <button type="submit" name="action_add"
+                        class="w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    {% trans "Change Phone" %}
+                </button>
+            </div>
+        </form>
+
+        {% if not phone_verified %}
+            <form id="verify-phone" method="post" action="{{ action_url }}" style="display: none;">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="verify">
+            </form>
+        {% endif %}
+    </div>
+</div>
+{% endblock content %}

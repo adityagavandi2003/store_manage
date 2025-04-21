@@ -1,0 +1,60 @@
+{% load indian_format %}
+<div class="bg-white py-6 shadow-md rounded-lg p-3 mb-4">
+  <h3 class="text-lg md:text-xl font-semibold mb-3 md:mb-4 text-gray-800">Daily Overview</h3>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-6 md:mb-8">
+        <div class="bg-white shadow-md rounded-lg p-4 md:p-6">
+            <div class="flex items-center justify-between mb-2 md:mb-4">
+                <div class="text-gray-700 font-medium text-sm md:text-base">Profit</div>
+                {% if daily.profit|stringformat:"s"|slice:":1" == '-' %}
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 md:h-6 md:w-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h-8m0 0V9m0 8l8-8 4 4 6-6" />
+                    </svg>
+                {% else %}
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 md:h-6 md:w-6 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                    </svg>
+                {% endif %}
+            </div>
+            <div class="text-xl md:text-2xl font-bold {% if daily.profit|stringformat:"s"|slice:":1" == '-' %}text-red-600{% else %}text-green-600{% endif %}">{{daily.profit|indian_currency}} <span class="{% if daily.profit_margin|stringformat:"s"|slice:":1" == '-' %}text-red-600{% else %}text-green-600{% endif %} font-medium text-sm">{% if daily.profit|stringformat:"s"|slice:":1" == '-' %}{{daily.profit_margin}}{% else %}+{{daily.profit_margin}}{% endif %}%</span></div>
+            <div class="text-xs md:text-sm text-gray-500">Net profit of daily</div>
+        </div> 
+
+        <div class="bg-white shadow-md rounded-lg p-4 md:p-6">
+            <div class="flex items-center justify-between mb-2 md:mb-4">
+                <div class="text-gray-700 font-medium text-sm md:text-base">Sales</div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 md:h-6 md:w-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 0a2 2 0 100 4 2 2 0 000-4z" />
+                </svg>
+            </div>
+            <div class="text-xl md:text-2xl font-bold text-blue-600">{{ daily.total_sales|indian_currency }}</div>
+            <div class="text-xs md:text-sm text-gray-500">Total sales of daily</div>
+        </div>
+
+        <div class="bg-white shadow-md rounded-lg p-4 md:p-6">
+            <div class="flex items-center justify-between mb-2 md:mb-4">
+                <div class="text-gray-700 font-medium text-sm md:text-base">Expenses</div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 md:h-6 md:w-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 8v1m0-8c-1.11 0-2.08.402-2.599 1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            </div>
+            <div class="text-xl md:text-2xl font-bold text-red-600">{{ daily.total_expenses|indian_currency }}</div>
+            <div class="text-xs md:text-sm text-gray-500">Total expenses of daily</div>
+        </div>
+
+        <div class="bg-white shadow-md rounded-lg p-4 md:p-6">
+            <div class="flex items-center justify-between mb-2 md:mb-4">
+                <div class="text-gray-700 font-medium text-sm md:text-base">Net Balance</div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 md:h-6 md:w-6 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
+            </div>
+            <div class="text-xl md:text-2xl font-bold {% if daily.profit|stringformat:"s"|slice:":1" == '-' %}text-red-600{% else %}text-green-600{% endif %}">{{ daily.net_balance|indian_currency }}</div>
+            <div class="text-xs md:text-sm text-gray-500">Current balance overview</div>
+        </div>
+    </div>
+    <a
+      href="{% url "financedashboard" %}"
+      class="block mt-4 text-xs md:text-sm text-blue-500 hover:underline text-center"
+      >View Full Finance Report</a
+    >
+</div>

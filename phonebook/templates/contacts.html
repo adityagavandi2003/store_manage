@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}Khata Book{% endblock %}
+
+{% block  section %}
+<div class="flex h-screen">
+    {% include "components/navbar.html" with phonebook="phonebook" %}
+    <div class="flex-1 flex flex-col">
+        {% include "components/header.html" with head='KhataBook' %}
+        <div class="container mx-auto p-8">
+            <h1 class="text-2xl font-semibold text-gray-800 mb-6">Contacts</h1>
+            <form method='post' class="bg-white shadow-md rounded-md p-6 mb-6">
+                {% csrf_token %}
+                <h2 class="text-lg font-semibold text-gray-700 mb-4">Add New Contact</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="id_name" class="block text-gray-600 text-sm font-semibold mb-2">Name</label>
+                        <input type="text" id="id_name" name='name' required maxlength='50' class="w-full border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500" value='{{contact.name}}' placeholder="Enter name">
+                    </div>
+                    <div>
+                        <label for="id_phone_number" class="block text-gray-600 text-sm font-semibold mb-2">Phone</label>
+                        <input type="tel" id="id_phone_number" name="phone_number" required maxlength="10" class="w-full border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500" value='{{contact.phone_number}}' placeholder="Enter phone number">
+                    </div>
+                </div>
+                <button type='submit' class="bg-green-500 cursor-pointer hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-4">Add Contact</button>
+            </form>
+    
+            <div class="bg-white shadow-md rounded-md p-6">
+                <div class='flex justify-between items-center'>
+                    <div class="left">
+                        <h2 class="text-lg font-semibold text-gray-700 mb-4">Contact List</h2>
+                    </div>
+                    <div class="right">
+                        <!-- Desktop Search -->
+                        <div class="hidden md:block">
+                            <input type="text" placeholder="Search..." class="px-3 py-1 rounded-md border border-gray-300 text-sm">
+                        </div>
+
+                        <div class="flex items-center gap-4">
+                            <!-- Mobile Search Icon -->
+                            <button onclick="toggleMobileSearch()" class="md:hidden text-gray-700">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2"
+                                viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                            </svg>
+                            </button>
+                        </div>
+                        <!-- Mobile Search Field -->
+                        <div id="mobileSearch" class="hidden md:hidden px-4 mt-2">
+                            <input type="text" placeholder="Search..." class="w-full px-3 py-2 rounded-md border border-gray-300 text-sm">
+                        </div>
+                    </div>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full bg-white rounded-md shadow">
+                        <thead class="bg-gray-100">
+                            <tr>
+                                <th class="py-2 px-4 text-left text-gray-600 font-semibold">Name</th>
+                                <th class="py-2 px-4 text-left text-gray-600 font-semibold">Phone</th>
+                                <th class="py-2 px-4 text-right text-gray-600 font-semibold">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="contactList">
+                            {% for contact in contacts %}
+                                <tr>
+                                    <td class="py-2 px-4 border-b text-gray-700">{{contact.name}}</td>
+                                    <td class="py-2 px-4 border-b text-gray-700">{{contact.phone_number}}</td>
+                                    <td class="py-2 px-4 border-b text-right">
+                                        <button onclick="window.location.href='{% url 'addcontact' contact.id %}'" class="bg-blue-500 cursor-pointer hover:bg-blue-700 text-white font-bold py-1 px-2 rounded text-sm mr-2">Edit</button>
+                                        <button onclick="window.location.href='{% url 'deletecontact' contact.id %}'" class="bg-red-500 cursor-pointer hover:bg-red-700 text-white font-bold py-1 px-2 rounded text-sm">Delete</button>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>    
+    </div>
+</div>
+{% endblock %}

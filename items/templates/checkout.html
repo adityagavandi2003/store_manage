@@ -125,46 +125,54 @@
                       {% endif %}
                       <p class="mt-4 text-center hover:text-blue-500 text-gray-500 text-xs">
                         or <a href="{% url "home" %}" class="text-indigo-600 hover:text-indigo-500">Continue Shopping</a>
-                </p>
+                      </p>
+                  </div>
               </div>
-            </div>
           </div>
         </div>
       </main>
     </div>
 </div>
-      {% include "components/popup/payment_choices.html" %}
+{% include "components/popup/payment_choices.html" %}
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
-    document.addEventListener("DOMContentLoaded", () => {
-        const productGrid = document.querySelector(".cart-item");
-    
-        productGrid.addEventListener("click", function (event) {
-          const productCard = event.target.closest(".cart-table");
-          if (!productCard) return;
-    
-          const qtyControl = event.target.closest(".qty-control");
-          if (!qtyControl) return;
-    
-          const inputField = qtyControl.querySelector("input[name='quantity']");
-          if (!inputField) return;
-    
-          let currentQty = parseInt(inputField.value);
-    
-          // Decrement
-          if (event.target.textContent.trim() === "-") {
-            if (currentQty > parseInt(inputField.getAttribute("min") || 1)) {
-              currentQty--;
-            }
-          }
-    
-          // Increment
-          if (event.target.textContent.trim() === "+") {
-            currentQty++;
-          }
-    
-          // Update both the visible value and the attribute
-          inputField.value = currentQty;
-          inputField.setAttribute("value", currentQty);
-        });
-      });
+  document.getElementById('rzp-button1').addEventListener('click',async function(){
+
+    const customerName = document.getElementById("customer-name").value;
+    const customerPhone = document.getElementById("customer-phone").value;
+
+
+    let response = await fetch('/payment/',{
+      method:'POST',
+      body: JSON.stringify({
+        name: customerName,
+        phone: customerPhone
+      })
+    })
+    let data = await response.json()
+    var options = {
+      "key": data.razorpay_key_id,
+      "amount": data.amount,
+      "currency": "INR",
+      "name": data.shop_owner,
+      "description": data.products_name.join(', '),
+      // "image": "https://example.com/your_logo",
+      "order_id": data.order_id,
+      "callback_url": data.razorpay_callback_url,
+      "prefill": { 
+          "name": customerName, 
+          "contact": customerPhone 
+      },
+      "notes": {
+          "address": "Store Manager + Finace Tracker Ltd."
+      },
+      "theme": {
+          "color": "#3399cc"
+      }
+    };
+    var rzp1 = new Razorpay(options);
+        rzp1.open();
+});
+</script>
 {% endblock %}

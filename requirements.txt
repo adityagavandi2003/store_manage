@@ -3,6 +3,7 @@ certifi==2025.1.31
 cffi==1.17.1
 charset-normalizer==3.4.1
 cryptography==44.0.2
+decouple==0.0.7
 Django==5.2
 django-allauth==65.7.0
 dotenv==0.9.9
@@ -11,7 +12,9 @@ jwt==1.3.1
 pillow==11.1.0
 pycparser==2.22
 python-dotenv==1.1.0
+razorpay==1.4.2
 requests==2.32.3
+setuptools==78.1.0
 sqlparse==0.5.3
 tzdata==2025.2
 urllib3==2.4.0

@@ -34,7 +34,7 @@
                     <label for="id_first_name" class="block text-sm font-medium text-gray-700">{% trans "First Name" %}</label>
                     <input type="text" name="first_name" id="id_first_name" required
                         class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                        placeholder="{% trans 'Enter your first name' %}">
+                        placeholder="{% trans 'Enter your first name' %}" value="">
                     {% if form.first_name.errors %}
                         <p class="text-red-500 text-sm mt-1">{{ form.first_name.errors.0 }}</p>
                     {% endif %}
@@ -45,7 +45,7 @@
                     <label for="id_last_name" class="block text-sm font-medium text-gray-700">{% trans "Last Name" %}</label>
                     <input type="text" name="last_name" id="id_last_name" required
                         class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                        placeholder="{% trans 'Enter your last name' %}">
+                        placeholder="{% trans 'Enter your last name' %}" value="">
                     {% if form.last_name.errors %}
                         <p class="text-red-500 text-sm mt-1">{{ form.last_name.errors.0 }}</p>
                     {% endif %}

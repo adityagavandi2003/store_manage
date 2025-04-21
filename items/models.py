@@ -37,7 +37,13 @@ class Order(models.Model):
     order_id = models.CharField(primary_key=True, default=uid, editable=False, max_length=255)
     shop = models.ForeignKey(User, related_name='store_owner', on_delete=models.CASCADE)
     customer = models.CharField(max_length=50,default='Guest')
+    customer_phone = models.CharField(max_length=15,blank=True,null=True)
     total_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    # razorpay 
+    razorpay_order_id = models.CharField(max_length=255,blank=True,null=True )
+    razorpay_payment_id = models.CharField(max_length=255,blank=True,null=True )
+    razorpay_signature = models.CharField(max_length=50,blank=True,null=True )
+    
     is_paid = models.BooleanField(default=False)
     payment_mode = models.CharField( max_length=50)
     order_at = models.DateTimeField(auto_now_add=True)
@@ -53,4 +59,4 @@ class OrderItem(models.Model):
     subtotal = models.PositiveIntegerField(default=1)
 
     def __str__(self):
-        return f"{self.quantity} x {self.product_name} in Order {self.order.order_id}"
+        return f"{self.product_name}"

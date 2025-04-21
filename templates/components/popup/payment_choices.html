@@ -1,57 +1,99 @@
-    <div class="container md:mx-auto absolute p-4 flex justify-center items-center min-h-screen mx-8">
-            <div id="payment-mode-modal" class="fixed z-1000 inset-0 flex items-center justify-center bg-black bg-opacity-50 backdrop-filter blur-md hidden">
-                    <div class="max-w-lg mx-auto p-6 bg-white shadow-md mt-10">
-                        <h2 class="text-xl font-bold mb-4">Choose Payment Method</h2>
-                        <form method="post" action='{% url "orders" %}' >
-                            {% csrf_token %}
-                            <label class="block mb-2">
-                                <input type="radio" name="payment_method" value="offline" checked>
-                                Cash on Delivery
-                            </label>
-                            <label class="block mb-4">
-                                <input type="radio" name="payment_method" value="online">
-                                Pay Online
-                            </label>
-                            <button type="submit" class="bg-blue-600 text-white px-4 cursor-pointer py-2 rounded">Place Order</button>
-                        </form>
-                    </div>
+<!-- Modal Wrapper -->
+<div class="container md:mx-auto absolute p-4 flex justify-center items-center min-h-screen mx-8">
+    <div id="payment-mode-modal" class="fixed z-[1000] inset-0 flex items-center justify-center bg-black bg-opacity-40 backdrop-blur-sm hidden">
+        <div class="max-w-md mx-auto p-6 bg-white rounded-md shadow-lg w-full md:w-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold">Choose Payment Method</h2>
+                <button id="close-modal-button" class="text-gray-500 hover:text-gray-700 focus:outline-none">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
             </div>
+
+            <div class="space-y-4">
+                <div class="flex flex-col gap-4 my-4 w-72">
+                    <input type="text" id="customer-name" name="customerName" placeholder="Enter customer name" required
+                        class="shadow border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:shadow-outline">
+                    <input type="tel" id="customer-phone" name="customerPhone" placeholder="Enter phone number" required
+                        class="shadow border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:shadow-outline">
+                </div>
+
+                <button type="submit" id="offlineSubmit"
+                    class="w-full py-3 px-4 rounded-md bg-gray-100 hover:bg-gray-200 text-gray-700 text-center shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    Pay Offline
+                </button>
+
+                <button type="button" id="rzp-button1"
+                    class="payment-mode-button w-full py-3 px-4 rounded-md bg-green-100 hover:bg-green-200 text-green-700 text-center shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500">
+                    Pay Online
+                </button>
+
+                <button type="submit" id="khatabookSubmit"
+                    class="payment-mode-button w-full py-3 px-4 rounded-md bg-green-100 hover:bg-green-200 text-green-700 text-center shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500">
+                    Add in KhataBook
+                </button>
+            </div>
+
+            <p id="payment-mode-error" class="text-red-500 text-sm mt-4 hidden">Please select a payment method.</p>
+        </div>
     </div>
-    <script>
-        const modal = document.getElementById("payment-mode-modal");
-        const openModalButton = document.getElementById("open-modal-button");
-        const closeModalButton = document.getElementById("close-modal-button");
-        const paymentModeButtons = document.querySelectorAll('.payment-mode-button');
-        const paymentModeError = document.getElementById("payment-mode-error");
+</div>
+<script>
+    const modal = document.getElementById("payment-mode-modal");
+    const openModalButton = document.getElementById("open-modal-button");
+    const closeModalButton = document.getElementById("close-modal-button");
+    const paymentModeError = document.getElementById("payment-mode-error");
 
-        openModalButton.addEventListener("click", () => {
-            modal.classList.remove('hidden');
-            document.body.classList.add('overflow-hidden');
+    openModalButton.addEventListener("click", () => {
+        modal.classList.remove("hidden");
+        document.body.classList.add("overflow-hidden");
+    });
+
+    closeModalButton.addEventListener("click", () => {
+        modal.classList.add("hidden");
+        document.body.classList.remove("overflow-hidden");
+        paymentModeError.classList.add("hidden");
+    });
+
+    window.addEventListener("click", (e) => {
+        if (e.target === modal) {
+            modal.classList.add("hidden");
+            document.body.classList.remove("overflow-hidden");
+            paymentModeError.classList.add("hidden");
+        }
+    });
+</script>
+<script>
+    document.getElementById('offlineSubmit').addEventListener('click', async function () {
+        await sendOrderData('Offline');
+    });
+
+    document.getElementById('khatabookSubmit').addEventListener('click', async function () {
+        await sendOrderData('KhataBook');
+    });
+
+    async function sendOrderData(mode) {
+        const customerName = document.getElementById("customer-name").value;
+        const customerPhone = document.getElementById("customer-phone").value;
+
+        const response = await fetch('{% url "payment" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                name: customerName,
+                phone: customerPhone,
+                mode: mode
+            })
         });
 
-        closeModalButton.addEventListener("click", () => {
-            modal.classList.add('hidden');
-            document.body.classList.remove('overflow-hidden');
-            paymentModeError.classList.add('hidden');
-        });
-
-        window.addEventListener("click", (event) => {
-            if (event.target === modal) {
-                modal.classList.add('hidden');
-                document.body.classList.remove('overflow-hidden');
-                paymentModeError.classList.add('hidden');
-            }
-        });
-
-        paymentModeButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                const selectedMode = button.dataset.mode;
-                console.log("Selected Payment Mode:", selectedMode);
-                modal.classList.add('hidden');
-                document.body.classList.remove('overflow-hidden');
-                paymentModeError.classList.add('hidden');
-                // Handle the selected mode here (e.g., send to server)
-            });
-        });
-    </script>
-
+        const result = await response.json();
+        if (result.success) {
+            window.location.href = '{% url "order_success" %}';
+        } else {
+            window.location.href = '{% url "order_failed" %}';
+        }
+    }
+</script>

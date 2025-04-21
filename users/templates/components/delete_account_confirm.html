@@ -1,0 +1,43 @@
+<!-- Modal Structure -->
+<div id="deleteAccountModal" class="fixed inset-0 z-50 hidden bg-gray-300 bg-opacity-50 flex justify-center items-center">
+    <div class="bg-white p-6 rounded-lg max-w-sm w-full">
+        <h1 class="text-2xl font-semibold text-gray-800">Delete Account</h1>
+        <p class="mt-4 text-sm text-gray-600">Are you sure you want to delete your account? This action is irreversible and will remove all your data.</p>
+
+        <form method="POST" action='{% url "delete_account" %}'>
+            {% csrf_token %}
+            <div class="mt-6">
+                <button type="submit" class="bg-red-600 text-white py-2 px-6 rounded-lg hover:bg-red-700">Yes, delete my account</button>
+            </div>
+        </form>
+
+        <div class="mt-4">
+            <button id="cancelButton" class="text-blue-600 hover:text-blue-700">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Toggle JavaScript -->
+<script>
+    // Get modal and buttons
+    const modal = document.getElementById('deleteAccountModal');
+    const deleteButton = document.getElementById('deleteAccountButton');
+    const cancelButton = document.getElementById('cancelButton');
+
+    // Show modal on delete button click
+    deleteButton.addEventListener('click', () => {
+        modal.classList.remove('hidden');
+    });
+
+    // Close modal on cancel button click
+    cancelButton.addEventListener('click', () => {
+        modal.classList.add('hidden');
+    });
+
+    // Optional: Close the modal when clicking outside of it
+    window.addEventListener('click', (event) => {
+        if (event.target === modal) {
+            modal.classList.add('hidden');
+        }
+    });
+</script>

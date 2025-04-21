@@ -1,5 +1,7 @@
 from django.urls import path
-from items.views import Home, Dashboard, Add_Product, Edit_Product, Delete_Product, View_Product, SalesOverview,AddToCart,Checkout,DeleteCart,ClearCart,ItemsOrder
+from items.views import Home, Dashboard, Add_Product, Edit_Product, Delete_Product, View_Product, SalesOverview,AddToCart,Checkout,DeleteCart,ClearCart,OnlinePaymentView,OfflinePaymentView,PaymentCallbackView,OrderSucessView,OrderFailedView
+
+
 urlpatterns = [
     path('', Home.as_view(), name='home'),
     path('dashboard/', Dashboard.as_view(), name='dashboard'),
@@ -16,5 +18,11 @@ urlpatterns = [
     path('checkout/', Checkout.as_view(), name='checkout'),
 
     # order
-    path('order/',ItemsOrder.as_view(),name='orders'),
+    path('payment/',OfflinePaymentView.as_view(),name='payment'), #  offline and khatabook
+    path('payment/online',OnlinePaymentView.as_view(),name='onlinepayment'),
+    path('payment-verify/',PaymentCallbackView.as_view(),name='payment_verify'),
+
+    # order actions
+    path('success/',OrderSucessView.as_view(),name='order_success'),
+    path('failed/',OrderFailedView.as_view(),name='order_failed'),
 ]

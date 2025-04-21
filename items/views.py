@@ -1,16 +1,23 @@
+import json
 from django.shortcuts import render, redirect, get_object_or_404
+from django.http import JsonResponse
 from django.views import View
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
+from finance.models import DailyFinanceSummary
 from items.forms import ProductForm
 from items.models import Product,Order,OrderItem
 from django.db.models import Sum
 from django.core.paginator import Paginator
-from datetime import timedelta
+from datetime import datetime, timedelta
 from django.utils import timezone
+from collections import Counter
 from decimal import Decimal
 import uuid
-from django.db import transaction
+import razorpay
+from store import settings
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 # Create your views here.
 
 
@@ -20,6 +27,8 @@ def uid():
     sp = str(idd).split('-')
     return sp[0]
 
+# client for razorpay
+client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_SECREATE_KEY))
 
 class Home(LoginRequiredMixin,View):
     def get(self, request, *args, **kwargs):
@@ -30,32 +39,46 @@ class Home(LoginRequiredMixin,View):
 
 
 class Dashboard(LoginRequiredMixin, View):
+    def get_daily_finance_data(self,shop,day,*args, **kwargs):
+        """ Helper function to get daily finance data (revenue and expenses). """
+        try:
+            year = datetime.now().year
+            daily_data = DailyFinanceSummary.objects.filter(shop=shop,day=day).first()
+            daily_orders = Order.objects.filter(shop=shop,order_at__day=day,order_at__year=year)
+            # Extract product info
+            daily_products = [product for product in daily_data.top_products.all()] if daily_data else []
+            product_counter = Counter()
+            for product in daily_products:  
+                product_counter[product.product_name] += product.quantity
+
+            # Get top 50 products
+            top_products = [
+                {'product': name, 'quantity': qty}
+                for name, qty in product_counter.most_common(50)
+            ]
+            return [daily_data,top_products,daily_orders]
+        except Exception as e:
+            print("Error in get_daily_finance_data:", e)
+            return [[], [], []]
+            
     def get(self, request, *args, **kwargs):
         today = timezone.now()
         thirty_days_ago= today-timedelta(days=30)
         product = Product.objects.filter(
             listed_by=request.user,created_at__date__gte=thirty_days_ago).order_by('-created_at')
-                
-        orders  = Order.objects.filter(shop=request.user,order_at__date__gte=thirty_days_ago).order_by('-order_at')
-        total = orders.aggregate(total_amount=Sum('total_amount'))['total_amount'] or Decimal(0)
+        shop = request.user
+        day = datetime.now().day
+        data = self.get_daily_finance_data(shop,day)
 
-        due_payments = orders.filter(is_paid=False)
-        due_amount = due_payments.aggregate(total_amount=Sum('total_amount'))['total_amount'] or Decimal(0)
-        paid_amount = total - due_amount if due_amount is not None else total
-
-        order_recieved = orders.count()- due_payments.count()
-        
         paginator = Paginator(product, 10)
 
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
         context = {
-            'products':page_obj,
-            'total':total,
-            "due_payments":due_payments,
-            'due_amount':due_amount,
-            'paid_amount':paid_amount,
-            'order_recieved':order_recieved,    
+            'products':page_obj,  
+            'daily': data[0] if data else '',
+            'top_products': data[1] if data else '', 
+            'order':data[2] if data else '',
         }
         return render(request, 'dashboard.html', context)
 
@@ -69,7 +92,7 @@ class View_Product(LoginRequiredMixin, View):
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
 
-        context = {'page_obj': page_obj}
+        context = {'products': page_obj}
         return render(request, 'product/viewproduct.html', context)
 
 
@@ -222,14 +245,71 @@ class SalesOverview(LoginRequiredMixin,View):
             'order_recieved':order_recieved,    
         }
         return render(request,'salesoverview.html',context)
-    
 
-class ItemsOrder(LoginRequiredMixin,View):
-    @transaction.atomic  # Ensures the order is created fully or not at all
-    def post(self,request,*args, **kwargs):
+@method_decorator(csrf_exempt,name='dispatch')
+class OfflinePaymentView(LoginRequiredMixin,View):
+    def post(self,request):
         cart = request.session.get('cart',{})
 
-        payment_method = request.POST.get('payment_method')
+        data = json.loads(request.body)
+        mode = data.get('mode')  # either 'Offline' or 'KhataBook'
+        customer_name = data.get('name')
+        customer_phone = data.get('phone')
+
+        shop_owner = request.user
+        total = Decimal('0.00')
+        order_items = []
+        for product_id,item in cart.items():
+            try:
+                product = Product.objects.get(pk=product_id)
+                product_price = item['price'].split('/')[0]
+                subtotal = item['quantity'] * Decimal(product_price)
+                total += subtotal
+                order_items.append({
+                    'product': product,
+                    'product_name': product.name,
+                    'product_price': item['price'],
+                    'quantity': item['quantity'],
+                    'subtotal': subtotal,
+                })
+            except Product.DoesNotExist:
+                continue
+
+        order = Order.objects.create(
+            order_id=f'#SALE00{uid()}',
+            shop=shop_owner,
+            customer=customer_name,
+            customer_phone=customer_phone,
+            total_amount=total,
+            is_paid=(mode == "Offline"),
+            payment_mode=mode
+        )
+
+        for items in order_items:
+            OrderItem.objects.create(
+                order = order,
+                product_name=items['product_name'],
+                product_price=items['product_price'],
+                quantity=items['quantity'],
+                subtotal=items['subtotal']
+            )
+        # Clear cart
+        request.session['cart'] = {}
+        if mode=='Offline':
+            messages.success(request,'Order Completed')
+        else:
+            messages.success(request,'Add in Khatabook')
+        return JsonResponse({'success': True})
+    
+@method_decorator(csrf_exempt,name='dispatch')
+class OnlinePaymentView(LoginRequiredMixin,View):
+    def post(self,request):
+        cart = request.session.get('cart',{})
+
+        data = json.loads(request.body)
+        customer_name = data.get('name')
+        customer_phone = data.get('phone')
+        
         shop_owner = request.user
         total = Decimal('0.00')
         order_items = []
@@ -249,17 +329,23 @@ class ItemsOrder(LoginRequiredMixin,View):
                 })
             except Product.DoesNotExist:
                 continue
+    
         
-        is_paid = True if payment_method != 'online' else False
+        order_data = {
+            'amount':int(total * 100), # paise
+            'currency':"INR",
+            'payment_capture':"1",
+        }
+        razorpay_order = client.order.create(order_data)
         order = Order.objects.create(
             order_id=f'#SALE00{uid()}',
             shop=shop_owner,
-            customer='Guest1',
             total_amount=total,
-            is_paid=is_paid,
-            payment_mode=payment_method
+            customer = customer_name,
+            customer_phone = customer_phone,
+            payment_mode="Online",
+            razorpay_order_id=razorpay_order['id'],
         )
-
         for items in order_items:
             OrderItem.objects.create(
                 order = order,
@@ -268,11 +354,52 @@ class ItemsOrder(LoginRequiredMixin,View):
                 quantity=items['quantity'],
                 subtotal=items['subtotal']
             )
-
         # Clear cart
         request.session['cart'] = {}
-        messages.success(request,'Order Completed')
-        return render(request, 'orders/order_success.html', {'order': order})
+        return JsonResponse({
+            "order_id": razorpay_order['id'],
+            "razorpay_key_id": settings.RAZORPAY_KEY_ID,
+            'products_name': [item['product_name'] for item in order_items],
+            'shop_owner': shop_owner.username,
+            "amount": float(total),
+            "razorpay_callback_url": settings.RAZORPAY_CALLBACK_URL
+        })
 
+@method_decorator(csrf_exempt,name='dispatch')
+class PaymentCallbackView(View):
+    def post(self,request):
+        if "razorpay_signature" in request.POST:
+            order_id = request.POST.get('razorpay_order_id')
+            payment_id = request.POST.get('razorpay_payment_id')
+            signature = request.POST.get('razorpay_signature')
+            order = get_object_or_404(Order,razorpay_order_id=order_id)
+
+            if client.utility.verify_payment_signature({
+                'razorpay_order_id': order_id,
+                'razorpay_payment_id': payment_id,
+                'razorpay_signature': signature
+            }):
+                order.razorpay_payment_id = payment_id
+                order.razorpay_signature = signature
+                order.is_paid = True
+                order.save()
+    
+                messages.success(request,'Order Completed')
+                return render(request, 'orders/order_success.html')
+            else:
+                order.is_paid = False
+                order.save()
+                messages.success(request,'Order Failed')
+                return render(request, 'orders/order_failed.html')
+        else:
+            messages.success(request,'Order Failed')
+            return render(request, 'orders/order_failed.html')
         
-        
+
+class OrderSucessView(LoginRequiredMixin,View):
+    def get(self,request,*args, **kwargs):
+        return render(request,'orders/order_success.html')
+    
+class OrderFailedView(LoginRequiredMixin,View):
+    def get(self,request,*args, **kwargs):
+        return render(request,'orders/order_failed.html')

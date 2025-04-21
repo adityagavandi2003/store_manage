@@ -28,7 +28,7 @@
       <button onclick="openUserMenu()" class="w-8 h-8 rounded-full bg-indigo-500 text-white flex items-center justify-center cursor-pointer">{{user.username.0|upper}}</button>
       <div id="userMenu" class="absolute top-full right-0 hidden mt-2 w-48 bg-white rounded-md shadow-lg origin-top-right transform scale-0 transition-transform duration-150 ease-in-out z-50">
         <div class="py-1">
-          <a href="{% url "profile" %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Profile</a>
+          <a href="{% url "profile" request.user.username %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Profile</a>
           <a href="{% url "my_reports" %}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">My reports</a>
           <hr class="border-gray-200">
           <form action="{% url "account_logout" %}" method="post">

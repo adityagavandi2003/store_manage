@@ -1,11 +1,3 @@
-# import uuid
-
-# idd = uuid.uuid4()
-# # Convert UUID to string before splitting
-# sp = str(idd).split('-')
-# print("Split UUID:", f'#SALE00{sp[0]}')
-
-
 # from django.db import models
 # from django.utils import timezone
 
@@ -106,11 +98,14 @@
 #         return f"Financial Overview for {self.month.strftime('%B %Y')}"
 
 
+lis = [1,2,3,4,5,5,6,7,5,4,5]
+print("original List: ",lis)
+print('len is : ',len(lis))
 
-# from datetime import timedelta
-# from django.utils import timezone
+re = []
+for i in lis:
+    if i not in re:
+        re.append(i)
 
-# today = timezone.now()
-# thirty_days_ago= today-timedelta(days=30)
-# print(thirty_days_ago)
-
+print("after re :",re)
+print("len is: ",len(re)) 

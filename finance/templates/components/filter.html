@@ -9,114 +9,83 @@
     </div>
     <div id="filterOptions" class="flex flex-col sm:flex-row gap-4 sm:block md:flex md:justify-between hidden">
         <div class="flex flex-wrap gap-2 justify-start" role="group">
-            <button data-filter="24-hours" class="time-filter-button cursor-pointer px-4 py-2 text-sm font-medium rounded-md border
-                       focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2
-                       bg-white text-gray-700 hover:bg-gray-50 border-gray-300">
-                24 Hours
-            </button>
-            <button data-filter="this-week" class="time-filter- cursor-pointer px-4 py-2 text-sm font-medium rounded-md border
-                       focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2
-                       bg-white text-gray-700 hover:bg-gray-50 border-gray-300">
-                This Week
-            </button>
-            <button data-filter="this-month" class="time-filter-button cursor-pointer px-4 py-2 text-sm font-medium rounded-md border
-                       focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2
-                       bg-white text-gray-700 hover:bg-gray-50 border-gray-300">
-                This Month
-            </button>
-            <button data-filter="this-year" class="time-filter-button px-4 py-2 text-sm font-medium rounded-md border
-                       focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2
-                       bg-white text-gray-700 hover:bg-gray-50 border-gray-300">
-                This Year
-            </button>
-            <button data-filter="total-overview" class="time-filter-button cursor-pointer px-4 py-2 text-sm font-medium rounded-md border
-                       focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2
-                       bg-white text-gray-700 hover:bg-gray-50 border-gray-300">
-                Total Overview
-            </button>
+            <div>
+                <button data-filter="today" onclick="window.location.href='{% url "financedashboard" %}'" class="time-filter-button cursor-pointer px-4 py-2 text-sm font-medium rounded-md border
+                        focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2
+                        bg-white text-gray-700 hover:bg-gray-50 border-gray-300">
+                        <input type="hidden" name="daily" value='daily'>
+                    Today
+                </button>
+            </div>
+            <form method="get">
+                <button data-filter="yesterday" onclick="this.form.submit()" class="time-filter-button cursor-pointer px-4 py-2 text-sm font-medium rounded-md border
+                        focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2
+                        bg-white text-gray-700 hover:bg-gray-50 border-gray-300">
+                        <input type="hidden" name="yesterday" value='yesterday'>
+                    Yesterday
+                </button>
+            </form>
+            <form method="get">
+                <button data-filter="this-week" onclick="this.form.submit()" class="time-filter- cursor-pointer px-4 py-2 text-sm font-medium rounded-md border
+                        focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2
+                        bg-white text-gray-700 hover:bg-gray-50 border-gray-300">
+                        <input type="hidden" name="week" value='week'>
+                    This Week
+                </button>
+            </form>
+            <form method="get">
+                <button data-filter="this-month" onclick="this.form.submit()" class="time-filter-button cursor-pointer px-4 py-2 text-sm font-medium rounded-md border
+                        focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2
+                        bg-white text-gray-700 hover:bg-gray-50 border-gray-300">
+                        <input type="hidden" name="month" value='month'>
+                    This Month
+                </button>
+            </form>
+            <form method="get">
+                <button data-filter="this-year" onclick="this.form.submit()" class="time-filter-button cursor-pointer px-4 py-2 text-sm font-medium rounded-md border
+                        focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2
+                        bg-white text-gray-700 hover:bg-gray-50 border-gray-300">
+                        <input type="hidden" name="year" value='This Year'>
+                    This Year
+                </button>
+            </form>
+            <form method="get">
+                <button data-filter="total-overview" onclick="this.form.submit()" class="time-filter-button cursor-pointer px-4 py-2 text-sm font-medium rounded-md border
+                        focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2
+                        bg-white text-gray-700 hover:bg-gray-50 border-gray-300">
+                        <input type="hidden" name="totaloveriew" value='Total '>
+                    Total Overview
+                </button>
+            </form>
         </div>
 
-        <div class="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
-            <div class="flex flex-col sm:flex-row gap-2 items-start sm:items-center">
-                <label for="month" class="block text-sm font-medium text-gray-700">Month:</label>
-                <select id="month" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:w-auto sm:text-sm rounded-md border-gray-300">
-                    <option value="">Select Month</option>
-                    <option value="1">January</option>
-                    <option value="2">February</option>
-                    <option value="3">March</option>
-                    <option value="4">April</option>
-                    <option value="5">May</option>
-                    <option value="6">June</option>
-                    <option value="7">July</option>
-                    <option value="8">August</option>
-                    <option value="9">September</option>
-                    <option value="10">October</option>
-                    <option value="11">November</option>
-                    <option value="12">December</option>
-                </select>
-            </div>
-
-            <div class="flex flex-col sm:flex-row gap-2 items-start sm:items-center">
-                <label for="year" class="block text-sm font-medium text-gray-700">Year:</label>
-                <select id="year" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:w-auto sm:text-sm rounded-md border-gray-300">
-                    <option value="">Select Year</option>
-                </select>
-            </div>
-            <button id="applyDateFilter" class="bg-indigo-500 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-md
-                       focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 w-full sm:w-auto text-sm">
-                Apply
-            </button>
-        </div>
+        <form method='get' action='{% url "financedashboard" %}' id='monthform' class="flex flex-col sm:flex-row gap-4 items-start sm:items-center">            
+            <div class="mb-4 flex items-center">
+                <label for="fullmonth" class="block text-sm font-medium text-gray-700 mb-1">Select Month</label>
+                <input 
+                  type="month" 
+                  name="fullmonth" 
+                  id="fullmonth" 
+                  value="{{ request.GET.fullmonth }}" 
+                  class="w-full sm:w-60 px-3 py-2 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                >
+              </div>
+        </form>
     </div>
 </div>
-
 <script>
-    const timeFilterButtons = document.querySelectorAll('.time-filter-button');
-    const monthSelect = document.getElementById('month');
-    const yearSelect = document.getElementById('year');
-    const applyDateFilterButton = document.getElementById('applyDateFilter');
-    const filterToggleButton = document.getElementById('filterToggleButton');
-    const filterOptionsDiv = document.getElementById('filterOptions');
-
-    if (filterToggleButton) {
-        filterToggleButton.addEventListener('click', function () {
-            filterOptionsDiv.classList.toggle('hidden');
-        });
+    const monthInput = document.getElementById('fullmonth');
+    const form = document.getElementById('monthform');
+  
+    // Set current month only if empty
+    if (!monthInput.value) {
+      const now = new Date();
+      const monthValue = now.toISOString().slice(0, 7); // Format: YYYY-MM
+      monthInput.value = monthValue;
     }
-
-
-    // Function to populate the year dropdown
-    function populateYearDropdown() {
-        const currentYear = new Date().getFullYear();
-        for (let i = 0; i < 6; i++) {
-            const year = currentYear - i;
-            const option = document.createElement('option');
-            option.value = year;
-            option.textContent = year;
-            yearSelect.appendChild(option);
-        }
-    }
-
-    // Call the function to populate the year dropdown on page load
-    populateYearDropdown();
-
-
-    applyDateFilterButton.addEventListener('click', function () {
-        const selectedMonth = monthSelect.value;
-        const selectedYear = yearSelect.value;
-
-        if (selectedMonth && selectedYear) {
-            console.log(`Filtering sales by month: ${selectedMonth}, year: ${selectedYear}`);
-            const filter = `month-${selectedYear}-${selectedMonth.padStart(2, '0')}`; // Example filter format
-            fetchSalesOverviewData(filter);
-
-            // Remove active class from time filter buttons when a specific date is applied
-            timeFilterButtons.forEach(btn => {
-                btn.classList.remove('bg-indigo-500', 'text-white', 'border-indigo-500');
-                btn.classList.remove('active');
-            });
-        } else if (selectedMonth || selectedYear) {
-            alert('Please select both month and year to apply the date filter.');
-        }
+  
+    // Auto-submit form when month changes
+    monthInput.addEventListener('change', () => {
+      form.submit();
     });
-</script>
+</script>   

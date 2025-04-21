@@ -1,0 +1,98 @@
+{% extends "account/base_confirm_code.html" %}
+{% load i18n %}
+{% load allauth account %}
+{% block head_title %}
+    {% translate "Sign In" %}
+{% endblock head_title %}
+
+{% block title %}
+    {% translate "Enter Sign-In Code" %}
+{% endblock %}
+
+{% block recipient %}
+    {% if email %}
+        <a href="mailto:{{ email }}" class="text-blue-600 hover:text-blue-800 font-medium">{{ email }}</a>
+    {% else %}
+        <a href="tel:{{ phone }}" class="text-blue-600 hover:text-blue-800 font-medium">{{ phone }}</a>
+    {% endif %}
+{% endblock %}
+
+{% block action_url %}
+    {% url 'account_confirm_login_code' %}
+{% endblock %}
+
+{% block extra_tags %}login{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-lg border border-gray-200">
+        <div>
+            <h2 class="text-2xl font-semibold text-gray-900">
+                {% translate "Enter Sign-In Code" %}
+            </h2>
+            <p class="mt-2 text-gray-600">
+                {% blocktranslate %}
+                    We've sent a sign-in code to your 
+                    {% if email %}
+                        email address: <span class="font-medium text-blue-600">{{ email }}</span>
+                    {% else %}
+                        phone number: <span class="font-medium text-blue-600">{{ phone }}</span>
+                    {% endif %}
+                {% endblocktranslate %}
+            </p>
+        </div>
+
+        <form method="POST" action="{{ action_url }}" class="space-y-6">
+            {% csrf_token %}
+            <div class="rounded-md shadow-sm -space-y-px">
+                {% for field in form %}
+                    <div>
+                        <label for="{{ field.id_for_label }}" class="sr-only">{{ field.label }}</label>
+                        <input
+                            id="{{ field.id_for_label }}"
+                            name="{{ field.html_name }}"
+                            type="{{ field.field.widget.input_type }}"
+                            autocomplete="off"
+                            required
+                            class="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                            placeholder="{{ field.label }}"
+                            {% if field.value %}value="{{ field.value }}"{% endif %}
+                        />
+                        {% if field.help_text %}
+                            <p class="text-xs text-gray-500 mt-1">{{ field.help_text }}</p>
+                        {% endif %}
+                        {% for error in field.errors %}
+                            <p class="text-xs text-red-600">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+            </div>
+            {{ redirect_field }}
+
+            <div class="flex items-center justify-between">
+                <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    {% translate "Confirm Sign In" %}
+                </button>
+            </div>
+             {% if cancel_url %}
+                <div class="text-center">
+                    <a href="{{ cancel_url }}" class="text-sm font-medium text-gray-600 hover:text-gray-800">{% translate "Cancel" %}</a>
+                </div>
+             {% else %}
+                <div class="text-center">
+                    <button type="submit" form="logout-from-stage" class="text-sm font-medium text-gray-600 hover:text-gray-800">
+                        {% translate "Cancel" %}
+                    </button>
+                </div>
+             {% endif %}
+        </form>
+
+        {% if not cancel_url %}
+            <form id="logout-from-stage" method="post" action="{% url 'account_logout' %}">
+                <input type="hidden" name="next" value="{% url 'account_login' %}">
+                {% csrf_token %}
+            </form>
+        {% endif %}
+    </div>
+</div>
+{% endblock content %}

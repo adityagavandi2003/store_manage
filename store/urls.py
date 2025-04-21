@@ -18,13 +18,17 @@ from django.contrib import admin
 from django.urls import path,include
 from django.conf import settings
 from django.conf.urls.static import static
+from store.views import LandPageView
+
 
 urlpatterns = [
+    path('index/storesathi/',LandPageView.as_view(),name='landpage'),
     path('admin/', admin.site.urls),
     path('',include('items.urls')),
     path('finance/',include('finance.urls')),
     path('account/',include('users.urls')),
-    # path('accounts/',include('django.contrib.auth.urls')),
+    path('khata-book/',include('khatabook.urls')),
+    path('phone-book/',include('phonebook.urls')),
     path('accounts/', include('allauth.urls')),
 ]
 
