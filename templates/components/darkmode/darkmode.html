@@ -1,0 +1,18 @@
+<div class="flex items-center gap-4">
+    <!-- Dark Mode Toggle -->
+    <button id="themeToggle" class="text-xl">🌞</button>
+</div>
+<script>
+    // Dark/Light Toggle
+    const themeBtn = document.getElementById('themeToggle');
+    themeBtn.addEventListener('click', () => {
+      document.documentElement.classList.toggle('dark');
+      const isDark = document.documentElement.classList.contains('dark');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      themeBtn.textContent = isDark ? '🌚' : '🌞';
+    });
+    if (localStorage.getItem('theme') === 'dark' || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+      themeBtn.textContent = '🌚';
+    }
+</script>

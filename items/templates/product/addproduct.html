@@ -48,13 +48,23 @@
                 </div>
           
                 <div class="mb-4">
-                  <label class="block text-gray-700 font-medium mb-1" for="price">Price (₹) <span class='text-sm'>Sell price per item</span> </label>
+                  <label class="block text-gray-700 font-medium mb-1" for="price">Sell Price (₹)</label>
                   <input type="text" id="id_price" value='{{product.price}}' name="price" class="w-full px-4 py-2 border border-gray-300 rounded-md" placeholder="e.g., 29.99" required>
                   {% if form.price.errors %}
                     <p class="text-red-500 text-sm mt-1">{{ form.price.errors.0 }}</p>
                   {% endif %}
                 </div>
-                
+                <!-- Select Unit -->
+                <div class="mb-4">
+                  <label for="id_stock_unit" class="block text-sm font-medium text-gray-700">Unit</label>
+                  <select id="id_stock_unit" name="stock_unit" class="mt-1 block w-full p-2 border border-gray-300 rounded-md">
+                    <option value="kg" selected>Kilogram</option>
+                    <option value="l">Liter</option>
+                    <option value="pcs">Pieces</option>
+                    <option value="ml">Milliliter</option>
+                    <option value="g">Gram</option>
+                  </select>
+                </div>
                 <div class="mb-4">
                   <label class="block text-gray-700 font-medium mb-1" for="purchase_price">Pruchase Price (₹) <span class='text-sm'>Full stock</span></label>
                   <input type="text" id="id_purchase_price" value='{{product.pruchase_price}}' name="purchase_price" class="w-full px-4 py-2 border border-gray-300 rounded-md" placeholder="e.g., 299.99" required>
@@ -64,13 +74,38 @@
                 </div>
           
                 <div class="mb-4">
-                  <label class="block text-gray-700 font-medium mb-1" for="stock">Stock Quantity</label>
+                  <label class="block text-gray-700 font-medium mb-1" for="stock">Stock Quantity </label>
                   <input type="text" name="stock" value='{{product.stock}}' id="id_stock" class="w-full px-4 py-2 border border-gray-300 rounded-md" placeholder="e.g., 100" required>
                   {% if form.stock.errors %}
                     <p class="text-red-500 text-sm mt-1">{{ form.stock.errors.0 }}</p>
                   {% endif %}
                 </div>
-          
+                <!-- Select category -->
+                <div class="mb-4">
+                  <label for="id_category" class="block text-sm font-medium text-gray-700">Category:</label>
+                  <select name="category" id="id_category" class="mt-1 block w-full p-2 border border-gray-300 rounded-md">
+                    <option value="GROCERY">Grocery</option>
+                    <option value="DAILY_ESSENTIALS">Daily Essentials</option>
+                    <option value="SNACKS_AND_NAMKEEN">Snacks &amp; Namkeen</option>
+                    <option value="BEVERAGES">Beverages</option>
+                    <option value="FRUITS_AND_VEGETABLES">Fruits &amp; Vegetables</option>
+                    <option value="OILS_AND_GHEE">Oils &amp; Ghee</option>
+                    <option value="SPICES">Spices</option>
+                    <option value="PERSONAL_CARE">Personal Care</option>
+                    <option value="HOME_CARE">Home Care</option>
+                    <option value="BABY_CARE">Baby Care</option>
+                    <option value="CLEANING_SUPPLIES">Cleaning Supplies</option>
+                    <option value="STATIONERY">Stationery</option>
+                    <option value="PLASTIC_PRODUCTS">Plastic Products</option>
+                    <option value="FURNITURE">Furniture</option>
+                    <option value="PET_CARE">Pet Care</option>
+                    <option value="KITCHENWARE">Kitchenware</option>
+                    <option value="COSMETICS">Cosmetics</option>
+                    <option value="ELECTRONICS">Electronics</option>
+                    <option value="TOYS">Toys</option>
+                    <option value="OTHERS" selected="">Others</option>
+                  </select>
+                </div>
                 <div class="mb-4">
                   <label class="block text-gray-700 font-medium mb-1" for="rack">Rack</label>
                   <input type="text" name="rack" id="id_rack" value='{{product.rack}}' class="w-full px-4 py-2 border border-gray-300 rounded-md" placeholder="e.g., A1" required>

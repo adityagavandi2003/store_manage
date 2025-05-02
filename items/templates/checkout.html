@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-
+{% load indian_format %}
 {% block title %}Your Cart{% endblock %}
 
 {% block section %}
@@ -10,44 +10,32 @@
 
     <main class="p-4 overflow-auto">
       <div>
-          <div class="max-w-3xl mx-auto bg-white shadow-lg rounded-md overflow-hidden">
+          <div class="bg-white shadow-lg rounded-md">
               <div class="px-6 py-8 border-b border-gray-200">
                   <h1 class="text-xl font-semibold text-gray-800">Checkout</h1>
               </div>
 
               <div class="overflow-x-auto bg-white rounded-lg shadow p-2">
                 {% if cart_items %}
-                <table class="w-full divide-y divide-gray-200 min-w-[600px]">
+                <table class="w-full divide-y divide-gray-200">
                   <thead class="bg-gray-100">
                     <tr>
-                      <th
-                        class="px-1 py-2 text-left text-xs font-medium text-gray-500 uppercase"
-                      >
+                      <th class="px-1 py-2 text-center text-xs font-medium text-gray-500 uppercase" >
                         Image
                       </th>
-                      <th
-                        class="px-1 py-2 text-left text-xs font-medium text-gray-500 uppercase"
-                      >
+                      <th class="px-1 py-2 text-center text-xs font-medium text-gray-500 uppercase" >
                         Name
                       </th>
-                      <th
-                        class="px-1 py-2 text-left text-xs font-medium text-gray-500 uppercase"
-                      >
+                      <th class="px-1 py-2 text-center text-xs font-medium text-gray-500 uppercase" >
                         Price
                       </th>
-                      <th
-                          class="px-1 py-2 text-left text-xs font-medium text-gray-500 uppercase"
-                        >
+                      <th class="px-1 py-2 text-center text-xs font-medium text-gray-500 uppercase" >
                           Quantity
                         </th>
-                      <th
-                        class="px-1 py-2 text-left text-xs font-medium text-gray-500 uppercase"
-                      >
-                        Total Amount
+                      <th class="px-1 py-2 text-center text-xs font-medium text-gray-500 uppercase" >
+                        Total
                       </th>
-                      <th
-                        class="px-1 py-2 text-left text-xs font-medium text-gray-500 uppercase"
-                      >
+                      <th class="px-1 py-2 text-center text-xs font-medium text-gray-500 uppercase" >
                         Action
                       </th>
                     </tr>
@@ -55,7 +43,7 @@
                   <tbody class="divide-y divide-gray-200">
                     {% for item in cart_items %}
                     <tr>
-                      <td class="px-1 py-2">
+                      <td class="px-1 py-2 flex items-center justify-center">
                         {% if item.product.images %}
                         <img
                           src="{{ item.product.images.url }}"
@@ -63,23 +51,23 @@
                           class="h-10 w-10 object-cover rounded-md"
                         />
                         {% else %}
-                        <span class="text-[0.7rem] text-gray-500">No Image</span> 
+                        <span class="text-[0.7rem] text-gray-500 text-center">No Image</span> 
                         {% endif %}
                       </td>
-                      <td class="px-1 py-2 text-xs font-medium text-gray-700">
-                        {{ item.product.name }}
+                      <td class="px-1 py-2 text-xs font-medium text-gray-700 text-center">
+                        {{ item.product.name|truncatechars:9 }}
                       </td>
-                      <td class="px-1 py-2 text-xs text-gray-600">
-                        ₹{{ item.product.price }}
+                      <td class="px-1 py-2 text-xs text-gray-600 text-center">
+                        {{ item.product.price|indian_currency }}
                       </td>
-                      <td class="px-1 py-2 text-xs text-gray-600">
+                      <td class="px-1 py-2 text-xs text-gray-600 text-center">
                         {{ item.quantity }}
                       </td>
-                      <td class="px-1 py-2 text-xs text-gray-600">
+                      <td class="px-1 py-2 text-xs text-gray-600 text-center">
                         ₹{{ item.subtotal|floatformat:2 }}
                       </td>
                       <td class="px-1 py-2 whitespace-nowrap">
-                        <div class="flex space-x-1">
+                        <div class="flex space-x-1 items-center justify-center">
                           <button
                             onclick="window.location.href = '{% url "deleteitemcart" item.product.product_id %}'"
                             class="text-red-600 hover:underline cursor-pointer text-sm ml-2"
@@ -96,10 +84,10 @@
                 {% endif %}
                 <div class='flex justify-between mx-4 my-4'>
                   <p class="pr-4 hover:text-blue-500 text-gray-500 text-xs">
-                    <button onclick="window.location.href = '{% url "clearcart" %}'" class="text-white cursor-pointer rounded-md px-4 bg-blue-500 py-2 font-semibold hover:text-indigo-500">Clear cart</button>
+                    <button onclick="window.location.href = '{% url "clearcart" %}'" class="text-white cursor-pointer rounded-md px-4 bg-blue-500 py-2 font-semibold hover:bg-blue-800">Clear cart</button>
                   </p>
                   <p class=" pl-4 hover:text-blue-500 text-gray-500 text-xs">
-                    <button onclick="window.location.href = '{% url "home" %}'" class="text-white cursor-pointer rounded-md px-4 bg-blue-500 py-2 font-semibold hover:text-indigo-500">Add more product</button>
+                    <button onclick="window.location.href = '{% url "home" %}'" class="text-white cursor-pointer rounded-md px-4 bg-blue-500 py-2 font-semibold hover:bg-blue-800">Add more product</button>
                   </p>
                 </div>  
               <div class="px-6 py-8 bg-gray-100 border-t border-gray-200">
@@ -135,44 +123,4 @@
 </div>
 {% include "components/popup/payment_choices.html" %}
 
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-<script>
-  document.getElementById('rzp-button1').addEventListener('click',async function(){
-
-    const customerName = document.getElementById("customer-name").value;
-    const customerPhone = document.getElementById("customer-phone").value;
-
-
-    let response = await fetch('/payment/',{
-      method:'POST',
-      body: JSON.stringify({
-        name: customerName,
-        phone: customerPhone
-      })
-    })
-    let data = await response.json()
-    var options = {
-      "key": data.razorpay_key_id,
-      "amount": data.amount,
-      "currency": "INR",
-      "name": data.shop_owner,
-      "description": data.products_name.join(', '),
-      // "image": "https://example.com/your_logo",
-      "order_id": data.order_id,
-      "callback_url": data.razorpay_callback_url,
-      "prefill": { 
-          "name": customerName, 
-          "contact": customerPhone 
-      },
-      "notes": {
-          "address": "Store Manager + Finace Tracker Ltd."
-      },
-      "theme": {
-          "color": "#3399cc"
-      }
-    };
-    var rzp1 = new Razorpay(options);
-        rzp1.open();
-});
-</script>
 {% endblock %}

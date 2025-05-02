@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% load indian_format %}
+{% load static %}
+{% block title %}{{product.name}}{% endblock %}
+
+{% block section %}
+<div class="flex h-screen">
+    {% include "components/navbar.html" with dashboard="dashboard" %}
+    <div class="flex-1 flex flex-col">
+      {% include "components/header.html" with head='Dashboard' %}
+  
+        <div class="rounded-lg md:p-6 lg:p-8 p-2">
+            <div class="top md:flex space-y-2 items-center justify-between mb-6">
+                <h1 class="text-2xl font-semibold text-gray-800">Product Details</h1>
+                <h3 class='font-semibold text-gray-600'>#{{product.product_id}}</h3>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="right space-y-4">
+                    <div class='flex flex-col md:flex-row gap-2'>
+                        {% if product.images %}
+                            <img src="{{product.images.url}}" alt="{{product.name}}" class="rounded-lg border p-2 border-gray-200 object-cover" style='width: 221px; height: 208px;'>
+                        {% else %}
+                            <img src="{% static "assets/images/empty-box.png" %}" alt="{{product.name}}" class="rounded-lg border border-gray-200">
+                        {% endif %}
+                        <div class="bg-gray-50 rounded-md p-4 w-full">
+                            <p class="text-gray-600 font-medium">Price:</p>
+                            <p class="text-gray-800 text-lg">{{product.display_price|indian_currency}}</p>
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 rounded-md p-4 w-full">
+                        <p class="text-gray-600 font-medium">Name:</p>
+                        <p class="text-gray-800 text-lg">{{product.name}}</p>
+                    </div>
+                    <div class='grid grid-cols-2 gap-2'>
+                        <div class="bg-gray-50 rounded-md p-4">
+                            <p class="text-gray-600 font-medium">Total Stocks:</p>
+                            <p class="text-gray-800 text-lg">{{product.stock_quantity_with_unit}}</p>
+                        </div>
+                        <div class="bg-gray-50 rounded-md p-4">
+                            <p class="text-gray-600 font-medium">Remaining Stock:</p>
+                            <p class="text-red-600 text-lg">{{product.display_remaining_stock}}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="space-y-4">
+                        <div class="bg-gray-50 rounded-md p-4">
+                            <p class="text-gray-600 font-medium">Category:</p>
+                            <p class="text-gray-800 text-lg">{{product.category}}</p>
+                        </div>
+                        <div class="bg-gray-50 rounded-md p-4">
+                            <p class="text-gray-600 font-medium">Total Purchase Price:</p>
+                            <p class="text-gray-800 text-lg">{{product.purchase_price|indian_currency}}</p>
+                        </div>
+                        <div class="bg-gray-50 rounded-md p-4">
+                            <p class="text-gray-600 font-medium">Rack:</p>
+                            <p class="text-gray-800 text-lg">{{product.rack}}</p>
+                        </div>
+                        <div class="bg-gray-50 rounded-md p-4">
+                            <p class="text-gray-600 font-medium">Creation Date:</p>
+                            <p class="text-gray-800 text-lg">{{product.created_at}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-8 flex justify-end space-x-3">
+                <button onclick="window.location.href='{% url "editproduct" product.product_id %}'" class="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2.5 px-5 rounded-md focus:outline-none focus:shadow-outline">
+                    Update Product
+                </button>
+                <button onclick="window.location.href='{% url "deleteproduct" product.product_id %}'" class="bg-red-500 hover:bg-red-700 text-white font-semibold py-2.5 px-5 rounded-md focus:outline-none focus:shadow-outline">
+                    Delete Product
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

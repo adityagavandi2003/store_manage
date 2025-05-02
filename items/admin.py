@@ -1,18 +1,24 @@
 from django.contrib import admin
-from items.models import Product, Customer, Order,OrderItem
+from items.models import Product, Order,OrderItem
 
 # Register your models here.
-
-
+    
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('name', 'price','purchase_price', 'stock', 'rack', 'listed_by','created_at')
+    list_display = ['name','display_price', 'display_remaining_stock', 'stock_quantity_with_unit','listed_by','created_at']
     search_fields = ('name','id','listed_by')
+    
+    def stock_quantity_with_unit(self, obj):
+        return obj.stock_quantity_with_unit
+    stock_quantity_with_unit.short_description = 'Total Stock'
 
-@admin.register(Customer)
-class CustomerAdmin(admin.ModelAdmin):
-    list_display = ('name', 'phone_number','created_at')
+    def display_remaining_stock(self, obj):
+        return obj.display_remaining_stock
+    display_remaining_stock.short_description = 'Remaining Stock'
 
+    def display_price(self, obj):
+        return obj.display_price
+    display_price.short_description = 'Price'
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
@@ -23,5 +29,5 @@ class OrderAdmin(admin.ModelAdmin):
 
 @admin.register(OrderItem)
 class OrderItem(admin.ModelAdmin):
-    list_display = ('order','product_name','product_price','quantity','subtotal')
+    list_display = ('order','product_name','product_price','unit','quantity','subtotal')
     search_fields = ('product_name','order__order_id')

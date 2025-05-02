@@ -98,14 +98,37 @@
 #         return f"Financial Overview for {self.month.strftime('%B %Y')}"
 
 
-lis = [1,2,3,4,5,5,6,7,5,4,5]
-print("original List: ",lis)
-print('len is : ',len(lis))
+# lis = [1,2,3,4,5,5,6,7,5,4,5]
+# print("original List: ",lis)
+# print('len is : ',len(lis))
 
-re = []
-for i in lis:
-    if i not in re:
-        re.append(i)
+# re = []
+# for i in lis:
+#     if i not in re:
+#         re.append(i)
 
-print("after re :",re)
-print("len is: ",len(re)) 
+# print("after re :",re)
+# print("len is: ",len(re)) 
+
+
+# import os
+# from reportlab.pdfgen import canvas
+# from reportlab.lib.pagesizes import A4
+# from reportlab.pdfbase import pdfmetrics
+# from reportlab.pdfbase.ttfonts import TTFont
+
+# # Absolute path to your font file
+# font_path = r"D:\visualcode\Workspacse\Django\store_manage\fonts\DejaVuSans.ttf"
+
+# # Register the font
+# pdfmetrics.registerFont(TTFont("DejaVuSans", font_path))
+
+# # Create PDF
+# c = canvas.Canvas("invoice_test.pdf", pagesize=A4)
+# c.setFont("DejaVuSans", 14)
+
+# # Write text with rupee symbol
+# c.drawString(100, 750, "Total: ₹500.00")  # This should now render correctly
+
+# c.save()
+# print("PDF generated successfully.")

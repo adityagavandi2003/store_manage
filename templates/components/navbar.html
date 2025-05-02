@@ -1,6 +1,6 @@
-<div id="fordesign" class="bg-gray-800 text-white w-64 h-full flex-shrink-0 p-4 fixed md:relative
-  transform transition-transform duration-300 z-40
-      -translate-x-full md:translate-x-0">
+<div id="fordesign" class="w-64 h-full p-4 fixed
+  transform transition-transform duration-300
+      -translate-x-full lg:translate-x-0">
 </div>
 <style>
   .storename{
@@ -10,8 +10,8 @@
   }
 </style>
 <aside id="sidebar" class="bg-gray-800 flex flex-col justify-between text-white w-64 h-full flex-shrink-0 p-4 fixed 
-  transform transition-transform duration-300 z-40
-      -translate-x-full md:translate-x-0 z-10">
+  transform transition-transform duration-300
+  -translate-x-full lg:translate-x-0 z-10">
   <div class="top">
     <div class="mb-8">
         <h1 class="storename text-2xl font-semibold">StoreSaathi</h1>
@@ -32,35 +32,40 @@
     <a href="{% url "report" %}" class="hover:text-blue-600">Report</a> | <a href="{% url "privacy_policy" %}" class="hover:text-blue-600">Privacy Policy</a>
   </div>
 </aside>
-<div id="overlay" class="fixed inset-0 bg-black bg-opacity-30 z-30 hidden md:hidden" onclick="toggleSidebar()"></div>
+
+<div id="overlay" class="fixed inset-0 bg-opacity-30 hidden lg:hidden" onclick="toggleSidebar()"></div>
 <script>
   function handleSidebarVisibility() {
-      const sidebar = document.getElementById("sidebar");
-      const mobileWidth = 768; // adjust this value based on your mobile breakpoint
-    
-      if (window.innerWidth < mobileWidth) {
-        // If in mobile width, ensure -translate-x-full is present (hidden by default)
-        if (!sidebar.classList.contains("-translate-x-full")) {
-          sidebar.classList.add("-translate-x-full");
-        }
-      } else {
-        // If not in mobile width, ensure -translate-x-full is NOT present (visible by default)
-        if (sidebar.classList.contains("-translate-x-full")) {
-          sidebar.classList.remove("-translate-x-full");
-        }
-      }
+    const sidebar = document.getElementById("sidebar");
+    const overlay = document.getElementById("overlay");
+    const fordesign = document.getElementById("fordesign");
+    const desktopWidth = 1024;
+
+    if (window.innerWidth < desktopWidth) {
+      // Sidebar hidden by default
+      sidebar.classList.add("-translate-x-full");
+      overlay.classList.add("hidden");
+    } else {
+      // Sidebar visible by default
+      sidebar.classList.remove("-translate-x-full");
+      overlay.classList.add("hidden");
     }
-    
-    // Call the function on initial load
-    handleSidebarVisibility();
-    
-    // Call the function whenever the window is resized
-    window.addEventListener('resize', handleSidebarVisibility);
-    
-    function toggleSidebar() {
-      const sidebar = document.getElementById("sidebar");
-      const overlay = document.getElementById("overlay");
-      sidebar.classList.toggle("-translate-x-full");
-      overlay.classList.toggle("hidden");
+    if (window.innerWidth >= desktopWidth) {
+      fordesign.classList.add("relative");
+      fordesign.classList.remove("fixed");
+    } else {
+      fordesign.classList.remove("relative");
+      fordesign.classList.add("fixed");
     }
+  }
+
+  function toggleSidebar() {
+    const sidebar = document.getElementById("sidebar");
+    const overlay = document.getElementById("overlay");
+    sidebar.classList.toggle("-translate-x-full");
+    overlay.classList.toggle("hidden");
+  }
+
+  window.addEventListener("resize", handleSidebarVisibility);
+  window.addEventListener("DOMContentLoaded", handleSidebarVisibility);
 </script>

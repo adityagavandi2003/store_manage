@@ -73,14 +73,17 @@
                         <ul class="list-disc list-inside text-gray-600 text-sm md:text-base">
                             <li>Product Sales: <span class="font-semibold text-blue-600">{{month.total_sales|indian_currency}}</span></li>
                             <li>Other Income: <span class="font-semibold text-green-600">{{month.other_income|indian_currency}}</span></li>
+                            {% for costs in income %}
+                                <li>{{costs.description}}: <span class="font-semibold text-green-600">{{costs.amount|indian_currency}}</span></li>
+                            {% endfor %}
                         </ul>
                     </div>
                     <div>
                         <h4 class="text-base md:text-lg font-medium text-gray-700 mb-1 md:mb-2">Expense Breakdown</h4>
                         <ul class="list-disc list-inside text-gray-600 text-sm md:text-base">
-                            <li>Operational Costs: <span class="font-semibold text-red-600">₹12,500</span></li>
-                            <li>Marketing: <span class="font-semibold text-red-600">₹5,200</span></li>
-                            <li>Salaries: <span class="font-semibold text-red-600">₹9,600</span></li>
+                            {% for costs in expense %}
+                                <li>{{costs.description}}: <span class="font-semibold text-red-600">{{costs.amount|indian_currency}}</span></li>
+                            {% endfor %}
                         </ul>
                     </div>
                     <div>
@@ -118,7 +121,7 @@
                                     <th class="px-2 py-1 md:px-4 md:py-2">Profit Margin</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody class="divide-y divide-gray-200">
                                 {% for month in monthly_summary %}
                                     <tr>
                                         <td class="border text-center px-2 py-1 md:px-4 md:py-2">{{month.month_name}} {{month.year}}</td>
@@ -156,11 +159,8 @@
             {% endif %}
 
             <div class="mt-6 md:mt-8 flex flex-col sm:flex-row items-start sm:items-center justify-start space-y-4 sm:space-y-0 sm:space-x-4">
-                <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded text-sm w-full sm:w-auto">
-                    Add Income
-                </button>
-                <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded text-sm w-full sm:w-auto">
-                    Add Expense
+                <button  onclick="window.location.href='{% url "income_expense" %}'" class="bg-green-500 cursor-pointer hover:bg-green-700 text-white font-bold py-2 px-4 rounded text-sm w-full sm:w-auto">
+                    Add Income / Expense
                 </button>
                 <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-sm w-full sm:w-auto">
                     View Reports

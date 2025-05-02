@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dark Mode Toggle with Button and LocalStorage</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Optional: Add smooth transitions */
+    body {
+      transition: background-color 0.3s, color 0.3s;
+    }
+  </style>
+</head>
+<body class="bg-white text-black dark:bg-gray-900 dark:text-white">
+
+  <h1 class="text-center mt-10 text-3xl font-semibold">Welcome to Dark Mode Toggle!</h1>
+  <p class="text-center mt-2">Click the button to toggle the theme.</p>
+
+  <!-- Theme Toggle Button -->
+  <button id="theme-toggle" class="p-3 m-4 rounded-lg bg-gray-200 dark:bg-gray-800 text-black dark:text-white">
+    Toggle Dark Mode
+  </button>
+
+  <script>
+    // Function to apply the theme based on system preference or saved preference
+    function applyTheme() {
+      const userTheme = localStorage.getItem('theme'); // Check if there's a saved theme
+      const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches; // Check system's theme
+
+      if (userTheme) {
+        // If there's a saved theme in localStorage, use it
+        document.body.classList.toggle('dark', userTheme === 'dark');
+      } else {
+        // If no saved theme, use the system's theme preference
+        document.body.classList.toggle('dark', systemTheme);
+      }
+    }
+
+    // Store the user's theme preference in localStorage
+    function setThemePreference(isDark) {
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    }
+
+    // Listen for changes in system theme
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+      setThemePreference(e.matches);
+      applyTheme();
+    });
+
+    // Apply the theme when the page loads
+    applyTheme();
+
+    // Toggle button functionality
+    document.getElementById('theme-toggle').addEventListener('click', () => {
+      const isDark = document.body.classList.toggle('dark');
+      setThemePreference(isDark); // Save the new theme preference
+    });
+  </script>
+
+</body>
+</html>

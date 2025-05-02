@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% load indian_format %}
+{% block title %}
+Income-Expense
+{% endblock %}
+
+{% block section %}
+<div class="flex h-screen">
+    {% include "components/navbar.html" with finance="finance" %}
+    <div class="flex-1 flex flex-col">
+        {% include "components/header.html" with head='Income & Expense' %}
+        <div class="container mx-auto p-8">
+            <form method='post' class="bg-white shadow-md rounded-md p-6 mb-6">
+                {% csrf_token %}
+                <h2 class="text-lg font-semibold text-gray-700 mb-4">Add Income & Expense</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
+                    <div>
+                        <label for="id_category" class="block text-gray-600 text-sm font-semibold mb-2">Type</label>
+                        <div class="relative">
+                            <select name="category" required id="id_category" class="block appearance-none w-full bg-white border border-gray-300 hover:border-gray-400 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline">
+                                <option value="income" selected>Income</option>
+                                <option value="expense">Expense</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="id_amount" class="block text-gray-600 text-sm font-semibold mb-2">Amount</label>
+                        <input type="number" id="id_amount" name="amount" required maxlength="10" class="w-full py-2 px-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500" value='{{contact.phone_number}}' placeholder="Enter phone number">
+                    </div>
+                </div>
+                <div>
+                    <label for="id_description" class="block text-gray-600 text-sm font-semibold mb-2">Description</label>
+                    <textarea id="id_description" name="description" cols="10" spellcheck="false" maxlength="255" rows="3" required maxlength="10" class="w-full px-4 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500" value='{{contact.phone_number}}' placeholder="Enter description"></textarea>
+                </div>
+                <button type='submit' class="bg-green-500 cursor-pointer hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-4">Add Tranction</button>
+            </form>
+    
+            <div class="bg-white shadow-md rounded-md p-6">
+                <div class='flex justify-between items-center'>
+                    <div class="left">
+                        <h2 class="text-lg font-semibold text-gray-700 mb-4">Contact List</h2>
+                    </div>
+                    <form method="get mb-2">
+                        <select id="id_filter" name="filter" required onchange="this.form.submit()" class="px-4 py-2 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md">
+                            <option value="all" {% if not request.GET.filter %}selected{% endif %}>All</option>
+                            <option value="income" {% if request.GET.filter == "income" %}selected{% endif %}>Income</option>
+                            <option value="expense" {% if request.GET.filter == "expense" %}selected{% endif %}>Expense</option>
+                        </select>
+                    </form>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full bg-white rounded-md shadow">
+                        <thead class="bg-gray-100">
+                            <tr>
+                                <th class="py-2 px-4 text-center text-gray-600 font-semibold">Type</th>
+                                <th class="py-2 px-4 text-center text-gray-600 font-semibold">Description</th>
+                                <th class="py-2 px-4 text-center text-gray-600 font-semibold">Amount</th>
+                                <th class="py-2 px-4 text-center text-gray-600 font-semibold">Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="contactList">
+                            {% for record in records %}
+                                <tr>
+                                    <td class="py-2 px-4 text-center text-gray-700">{{record.category|capfirst}}</td>
+                                    <td class="py-2 px-4 text-center text-gray-700">{{record.description}}</td>
+                                    <td class="py-2 px-4 text-center {% if record.is_income %}text-green-500 {% else %}text-red-700{% endif %}">{% if record.is_income %}+ {% else %}-{% endif %}{{record.amount|indian_currency}}</td>
+                                    <td class="py-2 px-4 text-center text-gray-700">{{record.create_at}}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>    
+    </div>
+</div>
+{% endblock %}

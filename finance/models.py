@@ -28,7 +28,7 @@ class FinanceRecord(models.Model):
     @property
     def is_expense(self):
         return self.category and self.category == 'expense'
-
+    
 class DailyFinanceSummary(models.Model):
     shop = models.ForeignKey(User, on_delete=models.CASCADE)
     day = models.PositiveSmallIntegerField()

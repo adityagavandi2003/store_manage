@@ -1,6 +1,4 @@
 from decimal import Decimal
-import json
-import uuid
 from django.http import JsonResponse
 from django.shortcuts import redirect, render,get_object_or_404
 from django.views import View
@@ -30,7 +28,7 @@ class KhataView(LoginRequiredMixin,View):
             shop=request.user,
             is_paid=False,
             payment_mode='KhataBook',
-            customer=pk  # or customer_phone=pk
+            customer=pk 
         )
         total_due = customer_khata.values('customer','customer_phone').annotate(total_due=Sum('total_amount')).order_by('customer').first()
         order_items = []

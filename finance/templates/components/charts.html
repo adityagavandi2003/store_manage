@@ -3,7 +3,7 @@
 <div class="bg-white shadow-md rounded-lg p-4 md:p-6 mb-6 md:mb-8">
     <div class="head flex justify-between items-center">
         <h3 class="text-lg md:text-xl font-semibold mb-3 md:mb-4 text-gray-800">Financial Overview</h3>
-        <select id="graph" name='graph' class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block sm:w-auto sm:text-sm rounded-md border-gray-300">
+        <select id="graph" name='graph' class="shadow-sm px-2 border border-blue-500 w-34 h-8 focus:ring-indigo-500 focus:border-indigo-500 block sm:w-auto sm:text-sm rounded-md border-gray-300">
             <option value="bar">Bar</option>
             <option value="line">Line</option>
         </select>
@@ -14,8 +14,8 @@
                 <h4 class="text-md font-semibold text-gray-700">Revenue</h4>
                 <span class="font-medium text-sm {% if month.profit|stringformat:"s"|slice:":1" == '-' %}text-red-600{% else %}text-green-600{% endif %}">{% if month.profit|stringformat:"s"|slice:":1" == '-' %}{{month.profit_margin}}{% else %}+{{month.profit_margin}}{% endif %}%</span>
             </div>
-            <div class="text-2xl font-bold text-blue-700 mb-4">{{month.profit|indian_currency}}</div>
-            <div class="w-full max-w-[600px] h-[400px] mx-auto relative">
+            <div class="text-2xl font-bold text-blue-700 mb-4">{{month.total_sales|indian_currency}}</div>
+            <div class="w-full max-w-[600px] h-[300px] mx-auto relative">
                 <canvas id="revenueChart"></canvas>
             </div>
             <small class='text-center text-xs text-red-600'>X-axis represents the date, and Y-axis represents the amount in rupees</small>
@@ -26,7 +26,7 @@
                 <span class="text-red-500 font-medium text-sm">-12.5%</span>
             </div>
             <div class="text-2xl font-bold text-green-500 mb-4">{% if month.profit %}{{ order|length }}{% endif %}</div>
-            <div class="w-full max-w-[600px] h-[400px] mx-auto relative">
+            <div class="w-full max-w-[600px] h-[300px] mx-auto relative">
                 <canvas id="productsChart"></canvas>
             </div>
             <small class='text-center text-xs text-red-600'>X-axis represents the Product, and Y-axis represents the Quantity</small>

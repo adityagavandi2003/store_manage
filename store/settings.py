@@ -54,10 +54,20 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',# Google OAuth
     'allauth.socialaccount.providers.facebook',# facebook
 
+    # chart visuls
     'chartjs',
+
+    # tailwind
+    'tailwind',
+    'theme',
+    'django_browser_reload',
 ]
 
 SITE_ID = 1
+
+TAILWIND_APP_NAME = 'theme'
+INTERNAL_IPS = ['127.0.0.1']
+NPM_BIN_PATH = r'C:\Program Files\nodejs\npm.cmd'
 
 
 MIDDLEWARE = [
@@ -71,6 +81,9 @@ MIDDLEWARE = [
 
     # Add the account middleware:
     "allauth.account.middleware.AccountMiddleware",
+
+    # django-reload
+    'django_browser_reload.middleware.BrowserReloadMiddleware',
 ]
 
 ROOT_URLCONF = 'store.urls'
@@ -160,11 +173,11 @@ ACCOUNT_LOGIN_ON_SIGNUP = True
 
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 LOGIN_REDIRECT_URL = "/dashboard/"
-ACCOUNT_LOGOUT_REDIRECT_URL = "/index/storesathi/"
+ACCOUNT_LOGOUT_REDIRECT_URL = "/accounts/login/"
 
 ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 3
-ACCOUNT_EMAIL_CONFIRMATION_COOLDOWN = 180  # resend emails
 ACCOUNT_CONFIRM_EMAIL_ON_GET = True
+
 
 TIME_ZONE = 'Asia/Kolkata'
 USE_TZ = True
@@ -195,6 +208,9 @@ ACCOUNT_RATE_LIMITS = {
     'confirm_email': '1/m',  # example: 1 email confirmation per minute
 }
 
+ACCOUNT_SESSION_REMEMBER = True
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+SESSION_COOKIE_AGE = 3600 * 24 * 7  # session for last 1 week
 
 # razorpay
 from decouple import config

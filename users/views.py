@@ -7,22 +7,24 @@ from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from users.models import Report
 from django.core.paginator import Paginator
-from items.models import Order
 from allauth.account.forms import AddEmailForm
 from allauth.account.models import EmailAddress
 from allauth.account.utils import user_email
 from django.contrib import messages
 from allauth.account.forms import ChangePasswordForm
-
 # Create your views here.
-    
+
+class LandPageView(View):
+    def get(self,request,*args, **kwargs):
+        return render(request,'landpage.html')
+
 class Notifications(LoginRequiredMixin,View):
     def get(self,request,*args, **kwargs):
         return render(request,'notifications.html')
 
 class Profile(LoginRequiredMixin,View):
-    def get(self,request,pk,*args, **kwargs):
-        user = get_object_or_404(User,username=pk)
+    def get(self,request,*args, **kwargs):
+        user = request.user
         emailaddresses = EmailAddress.objects.filter(user=user)
         initial_email = user_email(user)
         emailaddress_radios = [
@@ -54,12 +56,12 @@ class Profile(LoginRequiredMixin,View):
             login(request, request.user, backend=backend)
 
             # Success message
-            messages.success(request, ('Your password has been successfully changed.'))
+            messages.success(request, 'Your password has been successfully changed.')
 
             # Redirect to the profile page (or any other desired page)
             return redirect('profile') 
         else:
-            messages.error(request, ('Please correct the errors below.'))
+            messages.error(request, 'Please correct the errors below.')
 
         return render(request, 'user/profile.html', {'form': form})
 
@@ -82,17 +84,12 @@ class DeleteAccountView(LoginRequiredMixin,View):
         try:
             # Delete the associated email addresses (if needed)
             EmailAddress.objects.filter(user=user).delete()
-
-            # Delete the user
             user.delete()
-
-            # Log the user out after deleting the account
             messages.success(request, 'Your account has been successfully deleted.')
             return redirect('account_login') 
 
         except Exception as e:
             messages.error(request, f'Error deleting your account: {str(e)}')
-
 
 class Setting(LoginRequiredMixin,View):
     def get(self,request,*args, **kwargs):

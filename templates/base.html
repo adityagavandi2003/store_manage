@@ -1,14 +1,28 @@
 {% load static %}
+{% load static tailwind_tags %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{% block title %}{% endblock %}</title>
-    <link
-      href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css"
-      rel="stylesheet"
-    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+		{% tailwind_css %}
+
+    {% comment %} favicons {% endcomment %}
+    <link rel="icon" type="image/png" href="{% static "favicon/favicon-96x96.png" %}" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="{% static "favicon/favicon.svg" %}" />
+    <link rel="shortcut icon" href="{% static "favicon/favicon.ico" %}" />
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static "favicon/apple-touch-icon.png" %}" />
+    <meta name="apple-mobile-web-app-title" content="StoreSathi" />
+    <link rel="manifest" href="{% static "favicon/site.webmanifest" %}" />
+    <meta name="theme-color" content="#1F2937" id="theme-color-meta">
+
+    <style>
+        body {
+            scroll-behavior: smooth;
+        }
+    </style>
   </head>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Bowlby+One+SC&family=Noto+Serif:ital,wght@0,100..900;1,100..900&family=Oswald:wght@600&family=Pacifico&family=Parisienne&family=Source+Sans+3:wght@200..900&family=Teko:wght@300&display=swap');

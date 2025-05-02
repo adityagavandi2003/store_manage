@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path,include
 from django.conf import settings
 from django.conf.urls.static import static
-from store.views import LandPageView
+from users.views import LandPageView
 
 
 urlpatterns = [
@@ -30,6 +30,10 @@ urlpatterns = [
     path('khata-book/',include('khatabook.urls')),
     path('phone-book/',include('phonebook.urls')),
     path('accounts/', include('allauth.urls')),
+
+
+    # reload
+    path('browser_reload/', include('django_browser_reload.urls')),
 ]
 
 if settings.DEBUG:

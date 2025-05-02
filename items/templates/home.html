@@ -1,5 +1,6 @@
 {% extends "base.html" %} 
-
+{% load static %}
+{% load indian_format %}
 {% block title %}Home{% endblock %} 
 
 {% block section %}
@@ -23,29 +24,46 @@
     {% include "components/header.html" with head='Home' %}
 
     <main class="p-6 overflow-auto">
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {% for product in products %}
         <form method='get' action='{% url "add_to_cart" product.product_id %}' class="cart-table bg-white rounded-lg shadow-md overflow-hidden">
+          {% if product.images %}
             <div class="product-image-container">
                 <img src="{{product.images.url}}" alt="{{product.name}}" class="product-image">
             </div>
+            {% else %}
+              <div class="product-image-container">
+                <img src="{% static "assets/images/empty-box.png" %}" alt="{{product.name}}" class="product-image">
+              </div>
+            {% endif %}
           <div class="p-4">
-            <h3 class="text-lg font-semibold text-gray-700 mb-2">
-              {{product.name}}
-            </h3>
-            <div class="flex items-center justify-between">
-              <span class="text-xl font-bold text-indigo-600">₹ {{ product.price }}</span>
-              <div class="qty-control flex items-center justify-between border border-gray-300 rounded-md overflow-hidden w-24">
-                <button type="button" class="qty-btn decrement bg-gray-100 text-gray-600 hover:bg-gray-200 px-2 py-2 text-sm font-semibold">-</button>
-                <input type="text" readonly class="quantity-input w-10 text-center border-0 focus:ring-0 focus:outline-none text-sm" name="quantity" value="1" min="1">
-                <button type="button" class="qty-btn increment bg-gray-100 text-gray-600 hover:bg-gray-200 px-2 py-2 text-sm font-semibold">+</button>
-              </div>            
-              <button
-                  type='submit'
-                  class="cursor-pointer bg-indigo-500 hover:bg-indigo-700 text-white py-2 px-3 rounded-md">
-                  Select
-                </button>
+            <div class='flex items-center justify-between mb-2'>
+              <h3 class="text-lg font-semibold text-gray-700">
+                {{product.name}}
+              </h3>
+              <span class="text-sm font-semibold text-red-700">Left: {{product.display_remaining_stock}}</span>
             </div>
+            <div class="lg:flex lg:flex-row md:justify-between md:items-center  gap-4 mb-2">
+              <span class="text-xl font-bold text-indigo-600">{{ product.price|indian_currency }}/{{product.stock_unit}}</span>
+              {% if product.stock_unit == 'pcs' %}
+                <div class="qty-control flex items-center justify-between border border-gray-300 rounded-md overflow-hidden w-32">
+                  <button type="button" class="qty-btn decrement bg-gray-100 text-gray-600 hover:bg-gray-200 px-2 py-2 text-sm font-semibold">-</button>
+                  <input type="text" readonly class="quantity-input w-full text-center border-0 focus:ring-0 focus:outline-none text-sm" name="quantity" value="1" min="1" data-unit="pcs">
+                  <button type="button" class="qty-btn increment bg-gray-100 text-gray-600 hover:bg-gray-200 px-2 py-2 text-sm font-semibold">+</button>
+                </div>
+              {% else %}
+                <div class="qty-control flex items-center justify-between border border-gray-300 rounded-md overflow-hidden w-32">
+                  <button type="button" class="qty-btn decrement bg-gray-100 text-gray-600 hover:bg-gray-200 px-2 py-2 text-sm font-semibold">-</button>
+                  <input type="text" readonly class="quantity-input w-full text-center border-0 focus:ring-0 focus:outline-none text-sm" name="quantity" value="0.25" min="0.25" data-unit="kg">
+                  <button type="button" class="qty-btn increment bg-gray-100 text-gray-600 hover:bg-gray-200 px-2 py-2 text-sm font-semibold">+</button>
+                </div>
+              {% endif %}  
+            </div>                
+            <button
+                type='submit'
+                class="cursor-pointer w-full bg-indigo-500 hover:bg-indigo-700 text-white py-2 px-3 rounded-md">
+                Select
+            </button>
           </div>
         </form>
         {% endfor %}
@@ -68,34 +86,41 @@
     const productGrid = document.querySelector(".grid");
 
     productGrid.addEventListener("click", function (event) {
-      const productCard = event.target.closest(".cart-table");
-      if (!productCard) return;
+        const qtyControl = event.target.closest(".qty-control");
+        if (!qtyControl) return;
 
-      const qtyControl = event.target.closest(".qty-control");
-      if (!qtyControl) return;
+        const inputField = qtyControl.querySelector("input[name='quantity']");
+        if (!inputField) return;
 
-      const inputField = qtyControl.querySelector("input[name='quantity']");
-      if (!inputField) return;
+        const productUnit = inputField.getAttribute("data-unit"); // Assume the unit is stored in a data attribute of the input
+        let currentQty = parseFloat(inputField.value); // Use parseFloat to handle decimals
 
-      let currentQty = parseInt(inputField.value);
-
-      // Decrement
-      if (event.target.textContent.trim() === "-") {
-        if (currentQty > parseInt(inputField.getAttribute("min") || 1)) {
-          currentQty--;
+        // Handle the decrement behavior
+        if (event.target.classList.contains("decrement")) {
+            if (productUnit === "pcs") {
+                // If it's in pcs, decrement by 1
+                if (currentQty > 1) currentQty--;
+            } else {
+                // If it's in kg, ml, etc., decrement by 0.25
+                if (currentQty > 0.25) currentQty -= 0.25;
+            }
         }
-      }
 
-      // Increment
-      if (event.target.textContent.trim() === "+") {
-        currentQty++;
-      }
-
-      // Update both the visible value and the attribute
-      inputField.value = currentQty;
-      inputField.setAttribute("value", currentQty);
+        // Handle the increment behavior
+        if (event.target.classList.contains("increment")) {
+            if (productUnit === "pcs") {
+                // If it's in pcs, increment by 1
+                currentQty++;
+            } else {
+                // If it's in kg, ml, etc., increment by 0.25
+                currentQty += 0.25;
+            }
+        }
+        currentQty = parseFloat(currentQty.toFixed(2));
+        inputField.value = currentQty;
+        inputField.setAttribute("value", currentQty);
     });
-  });
+});
 </script>
 
   

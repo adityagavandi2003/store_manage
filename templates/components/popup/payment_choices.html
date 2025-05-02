@@ -1,6 +1,6 @@
 <!-- Modal Wrapper -->
-<div class="container md:mx-auto absolute p-4 flex justify-center items-center min-h-screen mx-8">
-    <div id="payment-mode-modal" class="fixed z-[1000] inset-0 flex items-center justify-center bg-black bg-opacity-40 backdrop-blur-sm hidden">
+<div class="container md:mx-auto absolute p-4 flex justify-center items-center mx-8">
+    <div id="payment-mode-modal" class="fixed z-[1000] inset-0 flex items-center justify-center bg-opacity-40 backdrop-blur-sm hidden">
         <div class="max-w-md mx-auto p-6 bg-white rounded-md shadow-lg w-full md:w-auto">
             <div class="flex justify-between items-center mb-4">
                 <h2 class="text-xl font-bold">Choose Payment Method</h2>
@@ -12,7 +12,7 @@
             </div>
 
             <div class="space-y-4">
-                <div class="flex flex-col gap-4 my-4 w-72">
+                <div class="flex flex-col gap-4 my-4 w-full">
                     <input type="text" id="customer-name" name="customerName" placeholder="Enter customer name" required
                         class="shadow border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:shadow-outline">
                     <input type="tel" id="customer-phone" name="customerPhone" placeholder="Enter phone number" required
@@ -64,6 +64,7 @@
         }
     });
 </script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
     document.getElementById('offlineSubmit').addEventListener('click', async function () {
         await sendOrderData('Offline');
@@ -96,4 +97,42 @@
             window.location.href = '{% url "order_failed" %}';
         }
     }
+
+    document.getElementById('rzp-button1').addEventListener('click',async function(){
+
+        const customerName = document.getElementById("customer-name").value;
+        const customerPhone = document.getElementById("customer-phone").value;
+    
+    
+        let response = await fetch('{% url "onlinepayment" %}',{
+          method:'POST',
+          body: JSON.stringify({
+            name: customerName,
+            phone: customerPhone
+          })
+        })
+        let data = await response.json()
+        var options = {
+          "key": data.razorpay_key_id,
+          "amount": data.amount,
+          "currency": "INR",
+          "name": data.shop_owner,
+          "description": data.products_name.join(', '),
+          // "image": "https://example.com/your_logo",
+          "order_id": data.order_id,
+          "callback_url": data.razorpay_callback_url,
+          "prefill": { 
+              "name": customerName, 
+              "contact": customerPhone 
+          },
+          "notes": {
+              "address": "Store Manager + Finace Tracker Ltd."
+          },
+          "theme": {
+              "color": "#3399cc"
+          }
+        };
+        var rzp1 = new Razorpay(options);
+            rzp1.open();
+    });
 </script>

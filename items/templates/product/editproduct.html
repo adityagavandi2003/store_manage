@@ -91,7 +91,17 @@
                 required
               />
             </div>
-            
+            <!-- Select Unit -->
+            <div class="mb-4">
+              <label for="id_stock_unit" class="block text-sm font-medium text-gray-700">Unit</label>
+              <select id="id_stock_unit" name="stock_unit" class="mt-1 block w-full p-2 border border-gray-300 rounded-md">
+                <option value="kg" {% if product.stock_unit == 'kg' %}selected{% endif %}>Kilogram</option>
+                <option value="l" {% if product.stock_unit == 'l' %}selected{% endif %}>Liter</option>
+                <option value="pcs" {% if product.stock_unit == 'pcs' %}selected{% endif %}>Pieces</option>
+                <option value="ml" {% if product.stock_unit == 'ml' %}selected{% endif %}>Milliliter</option>
+                <option value="g" {% if product.stock_unit == 'g' %}selected{% endif %}>Gram</option>
+              </select>
+            </div>
             <div>
               <label class="block text-gray-700 font-medium mb-1" for="id_price"
                 >Purchase Price (₹)</label
@@ -120,6 +130,33 @@
               />
             </div>
 
+            <!-- Select category -->
+            <div class="mb-4">
+              <label for="id_category" class="block text-sm font-medium text-gray-700">Category:</label>
+              <select name="category" id="id_category" class="mt-1 block w-full p-2 border border-gray-300 rounded-md">
+                <option value="GROCERY"               {% if product.category == 'GROCERY' %}selected{% endif %}>Grocery</option>
+                <option value="DAILY_ESSENTIALS"      {% if product.category == 'DAILY_ESSENTIALS' %}selected{% endif %}>Daily Essentials</option>
+                <option value="SNACKS_AND_NAMKEEN"    {% if product.category == 'SNACKS_AND_NAMKEEN' %}selected{% endif %}>Snacks &amp; Namkeen</option>
+                <option value="BEVERAGES"             {% if product.category == 'BEVERAGES' %}selected{% endif %}>Beverages</option>
+                <option value="FRUITS_AND_VEGETABLES" {% if product.category == 'FRUITS_AND_VEGETABLES' %}selected{% endif %}>Fruits &amp; Vegetables</option>
+                <option value="OILS_AND_GHEE"         {% if product.category == 'OILS_AND_GHEE' %}selected{% endif %}>Oils &amp; Ghee</option>
+                <option value="SPICES"                {% if product.category == 'SPICES' %}selected{% endif %}>Spices</option>
+                <option value="PERSONAL_CARE"         {% if product.category == 'PERSONAL_CARE' %}selected{% endif %}>Personal Care</option>
+                <option value="HOME_CARE"             {% if product.category == 'HOME_CARE' %}selected{% endif %}>Home Care</option>
+                <option value="BABY_CARE"             {% if product.category == 'BABY_CARE' %}selected{% endif %}>Baby Care</option>
+                <option value="CLEANING_SUPPLIES"     {% if product.category == 'CLEANING_SUPPLIES' %}selected{% endif %}>Cleaning Supplies</option>
+                <option value="STATIONERY"            {% if product.category == 'STATIONERY' %}selected{% endif %}>Stationery</option>
+                <option value="PLASTIC_PRODUCTS"      {% if product.category == 'PLASTIC_PRODUCTS' %}selected{% endif %}>Plastic Products</option>
+                <option value="FURNITURE"             {% if product.category == 'FURNITURE' %}selected{% endif %}>Furniture</option>
+                <option value="PET_CARE"              {% if product.category == 'PET_CARE' %}selected{% endif %}>Pet Care</option>
+                <option value="KITCHENWARE"           {% if product.category == 'KITCHENWARE' %}selected{% endif %}>Kitchenware</option>
+                <option value="COSMETICS"             {% if product.category == 'COSMETICS' %}selected{% endif %}>Cosmetics</option>
+                <option value="ELECTRONICS"           {% if product.category == 'ELECTRONICS' %}selected{% endif %}>Electronics</option>
+                <option value="TOYS"                  {% if product.category == 'TOYS' %}selected{% endif %}>Toys</option>
+                <option value="OTHERS"                {% if product.category == 'OTHERS' %}selected{% endif %}>Others</option>
+              </select>
+            </div>
+
             <div>
               <label class="block text-gray-700 font-medium mb-1" for="id_rack"
                 >Rack</label
@@ -137,7 +174,7 @@
             <div>
               <button
                 type="submit"
-                class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 transition duration-200"
+                class="w-full cursor-pointer bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 transition duration-200"
               >
                 Save Changes
               </button>
