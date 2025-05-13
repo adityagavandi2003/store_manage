@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 from django.contrib.auth.models import User
 import uuid
 from decimal import Decimal
@@ -9,11 +10,6 @@ def uid():
     # Convert UUID to string before splitting
     sp = str(idd).split('-')
     return f'{sp[0]+sp[1]+sp[2]}'
-
-def productid():
-    idd = uuid.uuid4()
-    sp = str(idd).split('-')
-    return f'{sp[4]}'
 
 # Unit choices
 UNIT_CHOICES = [
@@ -59,7 +55,7 @@ CONVERISON_FACTOR = {
 }
 
 class Product(models.Model):
-    product_id = models.CharField(primary_key=True, default=productid, editable=False)
+    product_id = models.CharField(primary_key=True, default=uid, editable=False, max_length=255)
     name = models.CharField(max_length=50)
     price = models.DecimalField(max_digits=15, help_text='Sell Price', decimal_places=2)
     purchase_price = models.DecimalField(max_digits=15, help_text='Purchase Price', decimal_places=2)
@@ -70,7 +66,7 @@ class Product(models.Model):
     images = models.ImageField(upload_to='product_images/', blank=True, null=True)
     rack = models.CharField(max_length=50,null=True,blank=True)
     listed_by = models.ForeignKey(User, related_name='add_by_user', on_delete=models.CASCADE)
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(default=timezone.now)
     
     category = models.CharField(max_length=50, choices=CATEGORY_CHOICES, default='OTHERS')
 
@@ -104,7 +100,7 @@ class Product(models.Model):
         Reduce the stock based on the quantity and unit provided. Converts units if necessary.
         Raises a ValueError if there is not enough stock available.
         """
-        # Convert the requested quantity to the unit used for remaining stock
+
         converted_quantity = self.convert_to_remaining_unit(quantity, unit)
 
         # Check if there is enough remaining stock
@@ -114,35 +110,23 @@ class Product(models.Model):
         # Update the remaining stock
         self.r_stock -= float(converted_quantity)
         self.save()
-
-    # convert units
-    def restock(self, quantity, unit):
-        """
-        Restock logic that allows adding quantities based on unit (including fractions for non-'pcs' units).
-        """
-        # If unit is pcs, we can only add whole numbers of pieces
-        if unit == 'pcs':
-            if quantity < 1 or quantity != int(quantity):
-                raise ValueError("Only whole pieces can be added.")
-            self.stock += quantity
-            self.r_stock += quantity
-        else:
-            # For weight/volume units (kg, g, l, ml), fractional quantities can be added
-            valid_quantities = [0.25, 0.5, 0.75, 1, 1.25]  # Allowed fractional increments
-
-            if quantity < 0.25:
-                raise ValueError("Minimum quantity for restocking is 0.25.")
-            
-            if quantity not in valid_quantities and quantity % 0.25 != 0:
-                raise ValueError("Only quantities like 0.25, 0.5, 0.75, 1, 1.25... can be added.")
-
-            # If the quantity is valid, add to stock
-            converted_qty = self.convert_to_remaining_unit(quantity, unit)
-            self.stock += converted_qty
-            self.r_stock += converted_qty
+    
+    @property
+    def profit_margin_on_product(self):
+        if self.stock == 0:
+            return Decimal('0.00')
         
-        self.save()
+        per_product_price = self.purchase_price / Decimal(self.stock)
+        sell_revenue = Decimal(self.stock) * self.price
         
+        if per_product_price == 0:
+            return Decimal('0.00') 
+        
+        profit = sell_revenue - self.purchase_price
+        profit_per_product = profit / Decimal(self.stock)
+        profit_margin = (profit_per_product / self.price) * Decimal('100.00')
+        return round(profit_margin,2)
+    
     @property
     def display_remaining_stock(self):
         return f"{round(self.stock+self.r_stock, 2)} {self.r_stock_unit}"
@@ -153,11 +137,7 @@ class Product(models.Model):
 
     @property
     def display_price(self):
-        # If the product is in 'pcs', the price will be per piece
-        if self.stock_unit == 'pcs':
-            return f"₹{self.price} per piece"
-        # If the product is in other units like kg, g, ml, l, it displays the price for that unit
-        return f"₹{self.price} per {self.stock_unit}"
+        return f'₹{self.price}/{self.stock_unit}'
     
 class Order(models.Model):
     order_id = models.CharField(primary_key=True, default=uid, editable=False, max_length=255)
@@ -171,9 +151,10 @@ class Order(models.Model):
     razorpay_signature = models.CharField(max_length=50,blank=True,null=True )
     
     is_paid = models.BooleanField(default=False)
-    payment_mode = models.CharField( max_length=50)
-    order_at = models.DateTimeField(auto_now_add=True)
+    payment_mode = models.CharField(max_length=50)
+    order_at = models.DateTimeField(default=timezone.now)
 
+    
     def __str__(self):
         return f"{self.order_id}"
 
@@ -182,8 +163,9 @@ class OrderItem(models.Model):
     product_name = models.CharField(max_length=255)
     product_price = models.DecimalField(max_digits=10,help_text='Sell Price',decimal_places=2)
     unit = models.CharField(max_length=10, choices=UNIT_CHOICES, default='kg')
-    quantity = models.PositiveIntegerField(default=1)
+    quantity = models.FloatField(default=1, verbose_name='quantity')
     subtotal = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    created_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return f"{self.product_name}"
@@ -197,4 +179,8 @@ class OrderItem(models.Model):
                 raise ValueError(f"Product with name {self.product_name} does not exist")
 
         super().save(*args, **kwargs)
+    
+    @property
+    def stock_quantity_with_unit(self):
+        return f'{round(self.product_price,2)} {self.unit}'
 

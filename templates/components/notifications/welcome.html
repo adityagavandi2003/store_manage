@@ -1,0 +1,49 @@
+{% if notify %}
+  {% for notification in notify %}
+    {% if notification.notification_type == 'greet' and not notification.is_read_by == request.user %}
+      <div id="welcomeModal" class="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center px-4 py-6 sm:px-0">
+        <div class="bg-white w-full max-w-md sm:max-w-lg p-6 sm:p-8 rounded-2xl shadow-xl overflow-y-auto max-h-[90vh]">
+          <h3 class="text-2xl font-bold text-gray-800 mb-3">🎉 Welcome to StoreSathi!</h3>
+
+          <p class="text-gray-700 mb-4">
+            Thank you for registering! You've just joined a platform designed to help you manage your store and track finances all in one place.
+          </p>
+
+          <div class="text-sm text-gray-600 mb-6 space-y-2">
+            {{ notification.message|safe }}
+          </div>
+          <p class="text-xs text-gray-500 mt-4">{{notification.created_at}}</p>
+
+          <form method="GET" action='{% url "close_notificatons" notification.id %}' class="text-right">
+            <button name="close-welcome_msg" type="submit"
+              class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition duration-200 cursor-pointer">
+              Close
+            </button>
+          </form>
+        </div>
+      </div>
+    {% elif notification.notification_type == 'update' and not notification.is_read_by == request.user %}
+      <div id="welcomeModal" class="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center px-4 py-6 sm:px-0">
+        <div class="bg-white w-full max-w-2xl sm:max-w-xl p-6 sm:p-8 rounded-2xl shadow-xl overflow-y-auto max-h-[90vh]">
+          <h3 class="text-2xl font-bold text-gray-800 mb-3">🚀 Update Notice!</h3>
+
+          <p class="text-gray-700 mb-4">
+            We’ve made some exciting improvements to StoreSathi to help you manage your store and track finances more smoothly.
+          </p>
+
+          <div class="text-sm text-gray-600 mb-6 space-y-2">
+            {{ notification.message|safe }}
+          </div>
+          <p class="text-xs text-gray-500 mt-4">{{notification.created_at}}</p>
+
+          <form method="GET" action='{% url "close_notificatons" notification.id %}' class="text-right">
+            <button name="close-welcome_msg" type="submit"
+              class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition duration-200 cursor-pointer">
+              Close
+            </button>
+          </form>
+        </div>
+      </div>
+    {% endif %}
+  {% endfor %}
+{% endif %}

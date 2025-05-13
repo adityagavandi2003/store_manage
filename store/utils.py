@@ -3,6 +3,7 @@ from django.http import HttpResponse,FileResponse
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 from reportlab.lib.units import cm
+from decimal import Decimal, InvalidOperation
 from reportlab.lib import colors
 from reportlab.platypus import Table, TableStyle
 from reportlab.pdfbase import pdfmetrics
@@ -106,8 +107,17 @@ def generate_invoice(order, user, products, *args, **kwargs):
         f.write(buffer.getvalue())
 
     pdf_data = buffer.getvalue()  # assuming you're using `io.BytesIO()`
-    invoice = filename,pdf_data
+    return filename,pdf_data
+
+def download_file(file_name,pdf_data):
+    invoice = file_name,pdf_data
     response =  HttpResponse(invoice, content_type='application/pdf')
-    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+    response['Content-Disposition'] = f'attachment; filename="{file_name}"'
     return response
 
+
+def to_decimal_safe(value):
+    try:
+        return Decimal(value or 0)
+    except (InvalidOperation, TypeError):
+        return Decimal('0.00')

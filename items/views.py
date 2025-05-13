@@ -1,7 +1,7 @@
 import json
 import os
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import JsonResponse
+from django.http import JsonResponse,HttpResponse
 from django.views import View
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -10,14 +10,16 @@ from items.forms import ProductForm
 from items.models import Product,Order,OrderItem
 from django.db.models import Sum
 from django.core.paginator import Paginator
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 from django.utils import timezone
 from collections import Counter
 from decimal import Decimal
+from users.models import Notification
+from django.contrib.auth.models import User
 import uuid
 import razorpay
 from store import settings
-from store.utils import generate_invoice
+from store.utils import generate_invoice,download_file
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 # Create your views here.
@@ -39,48 +41,78 @@ class Home(LoginRequiredMixin,View):
         context = {'products': product,'cart':cart}
         return render(request, 'home.html', context)
 
+class SearchView(LoginRequiredMixin,View):
+    def get(self,request,*args, **kwargs):
+        name = request.GET.get('search')
+        order = Order.objects.filter(customer=name).values()
+        return JsonResponse(list(order), safe=False)
 
 class Dashboard(LoginRequiredMixin, View):
-    def get_daily_finance_data(self,shop,day,*args, **kwargs):
-        """ Helper function to get daily finance data (revenue and expenses). """
+    def get_daily_finance_data(self, shop, day, *args, **kwargs):
         try:
-            year = datetime.now().year
-            daily_data = DailyFinanceSummary.objects.filter(shop=shop,day=day).first()
-            daily_orders = Order.objects.filter(shop=shop,order_at__day=day,order_at__year=year)
-            # Extract product info
-            daily_products = [product for product in daily_data.top_products.all()] if daily_data else []
-            product_counter = Counter()
-            for product in daily_products:  
-                product_counter[product.product_name] += product.quantity
+            daily_data = DailyFinanceSummary.objects.filter(
+                shop=shop,
+                recorded_at__gte=day
+            ).first()
+            daily_orders = Order.objects.filter(
+                shop=shop,
+                order_at__gte=day
+            )
+            products = OrderItem.objects.filter(order__in=daily_orders).order_by('-quantity')
+            return [daily_data, products, daily_orders]
 
-            # Get top 50 products
-            top_products = [
-                {'product': name, 'quantity': qty}
-                for name, qty in product_counter.most_common(50)
-            ]
-            return [daily_data,top_products,daily_orders]
         except Exception as e:
             print("Error in get_daily_finance_data:", e)
-            return [[], [], []]
-            
+            return [None, [], []]
+
     def get(self, request, *args, **kwargs):
         today = timezone.now()
-        thirty_days_ago= today-timedelta(days=30)
+        thirty_days_ago = today - timedelta(days=30)
+
         product = Product.objects.filter(
-            listed_by=request.user,created_at__date__gte=thirty_days_ago).order_by('-created_at')
+            listed_by=request.user,
+            created_at__gte=thirty_days_ago
+        ).order_by('-created_at')
+
         shop = request.user
-        day = datetime.now().day
-        data = self.get_daily_finance_data(shop,day)
+        day = date.today()
+        data = self.get_daily_finance_data(shop, day)
+
+        product_map = {}
+        for item in data[1]:
+            name = item.product_name
+            price = item.product_price
+            quantity = item.quantity
+            if name in product_map:
+                product_map[name]['quantity'] += quantity
+                product_map[name]['subtotal'] += price * Decimal(quantity)
+            else:
+                product_map[name] = {
+                    'quantity': quantity,
+                    'price': price,
+                    'subtotal': price * Decimal(quantity)
+                }
+
+        sorted_products = sorted(
+            [(name, details['quantity'], details['price'], details['subtotal'])
+             for name, details in product_map.items()],
+            key=lambda x: x[1],
+            reverse=True
+        )
 
         paginator = Paginator(product, 10)
-
-        page_number = request.GET.get('page')
+        page_number = request.GET.get('page', 1)
         page_obj = paginator.get_page(page_number)
+
+        top_product_paginator = Paginator(sorted_products, 10)
+        top_product_page_no = request.GET.get('top_page', 1)
+        top_product = top_product_paginator.get_page(top_product_page_no)
+
         context = {
-            'products':page_obj,  
-            'daily': data[0] if data else '',
-            'top_products': data[1] if data else '', 
-            'order':data[2] if data else '',
+            'products': page_obj,
+            'daily': data[0],
+            'top_products': top_product,
+            'order': data[2],
         }
         return render(request, 'dashboard.html', context)
 
@@ -136,14 +168,24 @@ class Edit_Product(LoginRequiredMixin, View):
 
     def post(self, request, pk, *args, **kwargs):
         product = get_object_or_404(Product, pk=pk)
+        r_stock = product.stock + product.r_stock
         form = ProductForm(request.POST, request.FILES, instance=product)
         if form.is_valid():
-            form.save()
+            data = form.save(commit=False)    
+            if r_stock == 0:
+                data.r_stock = 0
+                data.save()
+            else:
+                data.r_stock = 0
+                data.stock += r_stock
+                data.save()
+            product.created_at = timezone.now()
+            product.save()
             messages.success(request, '✅ Product update successfully!')
-            return redirect('/dashboard/')
-        context = {'form': form, 'product': product}
-        return render(request, 'product/editproduct.html', context)
-
+            return redirect('/products/')
+        else:
+            messages.error(request,'Something wrong')
+            return redirect(f'/product/edit/{pk}')
 
 class Delete_Product(LoginRequiredMixin, View):
     def get(self, request, pk, *args, **kwargs):
@@ -224,11 +266,11 @@ class SalesOverview(LoginRequiredMixin,View):
         filter_value = request.GET.get('filter')
 
         if filter_value == 'paid':  # Paid
-            orders = Order.objects.filter(shop=request.user,is_paid=True,order_at__date__gte=thirty_days_ago).order_by('-order_at')
+            orders = Order.objects.filter(shop=request.user,is_paid=True,order_at__gte=thirty_days_ago).order_by('-order_at')
         elif filter_value == 'unpaid':  # Unpaid
-            orders = Order.objects.filter(shop=request.user,is_paid=False,order_at__date__gte=thirty_days_ago).order_by('-order_at')
+            orders = Order.objects.filter(shop=request.user,is_paid=False,order_at__gte=thirty_days_ago).order_by('-order_at')
         else: # all
-            orders = Order.objects.filter(shop=request.user,order_at__date__gte=thirty_days_ago).order_by('-order_at')
+            orders = Order.objects.filter(shop=request.user,order_at__gte=thirty_days_ago).order_by('-order_at')
         
         total_order = orders.count()
         total_amount = orders.aggregate(total_amount=Sum('total_amount'))['total_amount']
@@ -281,6 +323,7 @@ class OfflinePaymentView(LoginRequiredMixin,View):
                     'product_price': Decimal(item['price']),
                     'quantity': Decimal(item['quantity']),
                     'subtotal': subtotal,
+                    'unit':product.stock_unit,
                 })
 
             except Product.DoesNotExist:
@@ -295,16 +338,18 @@ class OfflinePaymentView(LoginRequiredMixin,View):
             is_paid=(mode == "Offline"),
             payment_mode=mode
         )
-
-        for items in order_items:
-            OrderItem.objects.create(
-                order = order,
-                product_name=items['product_name'],
-                product_price=items['product_price'],
-                quantity=items['quantity'],
-                subtotal=items['subtotal']
-            )
-
+        try:
+            for items in order_items:
+                OrderItem.objects.create(
+                    order = order,
+                    product_name=items['product_name'],
+                    product_price=items['product_price'],
+                    quantity=items['quantity'],
+                    subtotal=items['subtotal'],
+                    unit=items['unit']
+                )
+        except Exception as e:
+            print("❌ OrderItem creation failed:", e)
         # Clear cart
         request.session['cart'] = {}
         if mode=='Offline':
@@ -330,7 +375,7 @@ class OnlinePaymentView(LoginRequiredMixin,View):
             try:
                 product = Product.objects.get(pk=product_id)
                 product_price = item['price'].split('/')[0]
-                subtotal = item['quantity'] * Decimal(product_price)
+                subtotal = Decimal(item['quantity']) * Decimal(product_price)
                 total += subtotal
                 order_items.append({
                     'product': product,
@@ -338,6 +383,7 @@ class OnlinePaymentView(LoginRequiredMixin,View):
                     'product_price': item['price'],
                     'quantity': item['quantity'],
                     'subtotal': subtotal,
+                    'unit':product.stock_unit,
                 })
             except Product.DoesNotExist:
                 continue
@@ -364,7 +410,8 @@ class OnlinePaymentView(LoginRequiredMixin,View):
                 product_name=items['product_name'],
                 product_price=items['product_price'],
                 quantity=items['quantity'],
-                subtotal=items['subtotal']
+                subtotal=items['subtotal'],
+                unit=items['unit']
             )
         
         # Clear cart
@@ -436,7 +483,8 @@ class InvoiceView(LoginRequiredMixin,View):
         try:
             response = generate_invoice(order=data,user=request.user.username,products=products)
             messages.success(request,'Pdf successfully generated')
-            return response
+            pdf_file = download_file(response[0],response[1])
+            return pdf_file
         except:
             messages.error(request,'An error occurs while generating the PDF.')
             return redirect(f'/invoice/{pk}')

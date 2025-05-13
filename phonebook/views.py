@@ -17,7 +17,7 @@ class PhoneBook(LoginRequiredMixin,View):
         }
         return render(request,'contacts.html',context)
     
-    def post(self,request,*args, **kwargs): # IntegrityError 
+    def post(self,request,*args, **kwargs): 
         try:
             form = ContactAddForm(request.POST)
             if form.is_valid():

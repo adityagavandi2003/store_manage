@@ -10,7 +10,7 @@ class FinanceRecordAdmin(admin.ModelAdmin):
 
 @admin.register(DailyFinanceSummary)
 class DailyFinanceAdmin(admin.ModelAdmin):
-    list_display = ('shop','day','total_sales','total_expenses','other_income','profit','profit_margin','recorded_at')
+    list_display = ('shop','total_sales','total_expenses','other_income','profit','profit_margin','recorded_at')
 
     # Automatically calculate profit before saving
     def save_model(self, request, obj, form, change):

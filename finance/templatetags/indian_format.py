@@ -28,3 +28,11 @@ def indian_currency(value):
         formatted = integer_part
 
     return f"₹{formatted}.{decimal_part}"
+
+
+@register.filter()
+def stock_number(value):
+    try:
+        return float(value.split()[0]) 
+    except (ValueError, IndexError):
+        return 0

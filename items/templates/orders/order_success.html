@@ -22,10 +22,8 @@
 
         const audio = new Audio("/static/assets/audios/ding.mp3");
         audio.preload = 'auto';
-        // Function to play the audio and then redirect
         function playAudioAndRedirect() {
             audio.play().then(() => {
-                // Redirect to the home page after the audio has played
                 const intervalId = setInterval(() => {
                     countdown--;
                     countdownDisplay.textContent = countdown;
@@ -36,9 +34,7 @@
                 }, 1000); // 5000 milliseconds = 5 seconds
                
             }).catch(error => {
-                // Handle any errors that may occur during audio playback
                 console.error("Error playing audio:", error);
-                // Redirect anyway after 5 seconds
                  const intervalId = setInterval(() => {
                     countdown--;
                     countdownDisplay.textContent = countdown;

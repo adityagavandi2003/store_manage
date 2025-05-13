@@ -6,20 +6,27 @@
 <div class="flex h-screen">
     {% include "components/navbar.html" with notifications="notifications" %}
     <div class="flex-1 flex flex-col overflow-y-auto bg-gray-100">
-        {% include "components/header.html" with head='Notifications' %}
+        {% include "components/header.html" with head='Dashboard' notify=notify %}
 
         <main class="p-6">
             <div class="bg-white shadow-md rounded-lg overflow-hidden">
+                {% if notify %}
                 <ul role="list" class="divide-y divide-gray-200">
+                    {% for notification in notify %}
+                    
                     <li class="px-4 py-4 sm:px-6">
                         <div class="flex items-center justify-between">
                             <p class="text-sm font-medium text-gray-900">
-                                New order placed! (#ORDER123)
+                               {{notification.message}}
                             </p>
                             <div class="ml-2 flex-shrink-0">
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                    New
-                                </span>
+                                {% if not notification.is_read %} 
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                        New
+                                    </span>
+                                {% else %}
+                                    <span></span>   
+                                {% endif %}
                             </div>
                         </div>
                         <div class="mt-2 sm:flex sm:justify-between">
@@ -28,88 +35,14 @@
                                     <svg class="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                                     </svg>
-                                    <time datetime="2025-04-10T14:30">Today at 2:30 PM</time>
+                                    <time datetime="2025-04-10T14:30">{{notification.created_at|timesince}}</time>
                                 </p>
-                            </div>
-                            <div class="mt-2 sm:mt-0">
-                                <a href="#" class="inline-flex items-center text-sm font-semibold text-indigo-600 hover:text-indigo-800">
-                                    View Order
-                                    <svg class="ml-1.5 h-5 w-5 flex-shrink-0 text-indigo-500" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                        <path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L13 6.414V17a1 1 0 11-2 0V6.414L7.707 10.707a1 1 0 01-1.414-1.414l4-4z" clip-rule="evenodd" />
-                                    </svg>
-                                </a>
                             </div>
                         </div>
                     </li>
-
-                    <li class="px-4 py-4 sm:px-6">
-                        <div class="flex items-center justify-between">
-                            <p class="text-sm font-medium text-gray-900">
-                                Your product "Awesome Gadget" is back in stock!
-                            </p>
-                            <div class="ml-2 flex-shrink-0">
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                    In Stock
-                                </span>
-                            </div>
-                        </div>
-                        <div class="mt-2 sm:flex sm:justify-between">
-                            <div class="sm:flex">
-                                <p class="mr-6 flex items-center text-sm text-gray-500">
-                                    <svg class="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                    <time datetime="2025-04-09T10:00">Yesterday at 10:00 AM</time>
-                                </p>
-                            </div>
-                            <div class="mt-2 sm:mt-0">
-                                <a href="#" class="inline-flex items-center text-sm font-semibold text-indigo-600 hover:text-indigo-800">
-                                    View Product
-                                    <svg class="ml-1.5 h-5 w-5 flex-shrink-0 text-indigo-500" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                        <path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L13 6.414V17a1 1 0 11-2 0V6.414L7.707 10.707a1 1 0 01-1.414-1.414l4-4z" clip-rule="evenodd" />
-                                    </svg>
-                                </a>
-                            </div>
-                        </div>
-                    </li>
-
-                    <li class="px-4 py-4 sm:px-6">
-                        <div class="flex items-center justify-between">
-                            <p class="text-sm font-medium text-gray-900">
-                                Account update successful.
-                            </p>
-                            <div class="ml-2 flex-shrink-0">
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                                    Info
-                                </span>
-                            </div>
-                        </div>
-                        <div class="mt-2 sm:flex sm:justify-between">
-                            <div class="sm:flex">
-                                <p class="mr-6 flex items-center text-sm text-gray-500">
-                                    <svg class="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                    <time datetime="2025-04-08T16:45">April 8 at 4:45 PM</time>
-                                </p>
-                            </div>
-                            <div class="mt-2 sm:mt-0">
-                                <a href="#" class="inline-flex items-center text-sm font-semibold text-indigo-600 hover:text-indigo-800">
-                                    View Details
-                                    <svg class="ml-1.5 h-5 w-5 flex-shrink-0 text-indigo-500" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                        <path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L13 6.414V17a1 1 0 11-2 0V6.414L7.707 10.707a1 1 0 01-1.414-1.414l4-4z" clip-rule="evenodd" />
-                                    </svg>
-                                </a>
-                            </div>
-                        </div>
-                    </li>
+                    {% endfor %}
                 </ul>
-            </div>
-
-            <div class="mt-6">
-                <button class="bg-white border border-gray-300 rounded-md py-2 px-4 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-                    Load More
-                </button>
+                {% endif %}
             </div>
         </main>
     </div>

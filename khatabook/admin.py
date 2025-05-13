@@ -4,5 +4,5 @@ from khatabook.models import KhataBook
 
 @admin.register(KhataBook)
 class KhataBookAdmin(admin.ModelAdmin):
-    list_display = ('shop','order','total_khata_amount','paid_amount','remaing_amount','created_at')
+    list_display = ('shop','order','customer_name','total_khata_amount','paid_amount','remaining_amount','created_at')
 

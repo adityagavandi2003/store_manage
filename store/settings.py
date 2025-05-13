@@ -11,6 +11,10 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -78,9 +82,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-
-    # Add the account middleware:
-    "allauth.account.middleware.AccountMiddleware",
+    "allauth.account.middleware.AccountMiddleware",# Add the account middleware
 
     # django-reload
     'django_browser_reload.middleware.BrowserReloadMiddleware',
@@ -98,6 +100,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'store.context_processors.notifications',#notfications
 
                 # `allauth` needs this from django
                 'django.template.context_processors.request',
@@ -114,8 +117,12 @@ WSGI_APPLICATION = 'store.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD':os.getenv('DB_PASS'),
+        'HOST':os.getenv('DB_HOST'),
+        'PORT':os.getenv('DB_PORT')
     }
 }
 
@@ -178,10 +185,10 @@ ACCOUNT_LOGOUT_REDIRECT_URL = "/accounts/login/"
 ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 3
 ACCOUNT_CONFIRM_EMAIL_ON_GET = True
 
-
-TIME_ZONE = 'Asia/Kolkata'
 USE_TZ = True
+TIME_ZONE = 'Asia/Kolkata'
 
+SILENCED_SYSTEM_CHECKS = ['models.W036']
 
 AUTHENTICATION_BACKENDS = [
     # Needed to login by username in Django admin, regardless of `allauth`
@@ -213,16 +220,15 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 SESSION_COOKIE_AGE = 3600 * 24 * 7  # session for last 1 week
 
 # razorpay
-from decouple import config
-RAZORPAY_KEY_ID =config("RAZORPAY_KEY_ID")
-RAZORPAY_SECREATE_KEY = config("RAZORPAY_SECREATE_KEY")
-RAZORPAY_CALLBACK_URL = config('RAZORPAY_CALLBACK_URL')
+RAZORPAY_KEY_ID =os.getenv("RAZORPAY_KEY_ID")
+RAZORPAY_SECREATE_KEY = os.getenv("RAZORPAY_SECREATE_KEY")
+RAZORPAY_CALLBACK_URL = os.getenv('RAZORPAY_CALLBACK_URL')
 
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
         'APP': {
-            'client_id':config("GOOGLE_CLIENT_ID"),
-            'secret':config("GOOGLE_SECRET_KEY"),
+            'client_id':os.getenv("GOOGLE_CLIENT_ID"),
+            'secret':os.getenv("GOOGLE_SECRET_KEY"),
             'key': ''
         }
     }

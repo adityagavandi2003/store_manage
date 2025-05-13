@@ -1,5 +1,5 @@
 from django.urls import path
-from items.views import Home, Dashboard, Add_Product, Edit_Product, Delete_Product, View_Product, SalesOverview,AddToCart,Checkout,DeleteCart,ClearCart,OnlinePaymentView,OfflinePaymentView,PaymentCallbackView,OrderSucessView,OrderFailedView,InvoiceView,ProductView
+from items.views import Home, Dashboard, Add_Product, Edit_Product, Delete_Product, View_Product, SalesOverview,AddToCart,Checkout,DeleteCart,ClearCart,OnlinePaymentView,OfflinePaymentView,PaymentCallbackView,OrderSucessView,OrderFailedView,InvoiceView,ProductView,SearchView
 
 
 urlpatterns = [
@@ -31,4 +31,7 @@ urlpatterns = [
 
     # invoice operations
     path('invoice/<str:pk>',InvoiceView.as_view(),name='invoice'),
+
+    # search
+    path('search/',SearchView.as_view(),name='search')
 ]

@@ -36,7 +36,7 @@
                     </div>
                     <div class="px-4 py-5 sm:p-6">
                         <label for="shop_name">Shop Name <b>{{request.user.username}}</b> </label>
-                        <form method="POST" action="{% url "change_username" %}" class="space-y-6">
+                        <form method="POST" action="{% url "setting" %}" class="space-y-6">
                             {% csrf_token %}
                             <div class="rounded-md  -space-y-px">
                                 <div class='mx-3 my-3'>
@@ -56,7 +56,7 @@
                             </div>
 
                             <div class="flex items-center justify-between">
-                                <button type="submit" class="w-full cursor-pointer flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                <button type="submit" name="change_store_name" class="w-full cursor-pointer flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                                     Save Store Name
                                 </button>
                             </div>

@@ -27,25 +27,33 @@
                     <table class="min-w-full bg-white rounded-md shadow">
                         <thead class="bg-gray-100">
                             <tr>
-                                <th class="py-2 px-4 text-left text-gray-600 font-semibold">name</th>
-                                <th class="py-2 px-4 text-right text-gray-600 font-semibold">Quantity</th>
-                                <th class="py-2 px-4 text-right text-gray-600 font-semibold">Price</th>
-                                <th class="py-2 px-4 text-right text-gray-600 font-semibold">Subtotal</th>
+                                <th class="py-2 px-4 text-center text-gray-600 font-semibold">name</th>
+                                <th class="py-2 px-4 text-center text-gray-600 font-semibold">Quantity</th>
+                                <th class="py-2 px-4 text-center text-gray-600 font-semibold">Price</th>
+                                <th class="py-2 px-4 text-center text-gray-600 font-semibold">Subtotal</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for order in orders %}
                                 <tr>
-                                    <td class="py-2 px-4 border-b text-right text-gray-700">{{order.product_name}}</td>
-                                    <td class="py-2 px-4 border-b text-right text-gray-700">{{ order.product_quantity }}</td>
-                                    <td class="py-2 px-4 border-b text-right text-gray-700">{{ order.product_price }}</td>
-                                    <td class="py-2 px-4 border-b text-right text-gray-700">{{order.product_subtotal}}</td>
+                                    <td class="py-2 px-4 border-b text-center text-gray-700">{{order.product_name}}</td>
+                                    <td class="py-2 px-4 border-b text-center text-gray-700">{{order.product_quantity }}</td>
+                                    <td class="py-2 px-4 border-b text-center text-gray-700">{{order.product_price }}</td>
+                                    <td class="py-2 px-4 border-b text-center text-gray-700">{{order.product_subtotal}}</td>
                                 </tr>
                             {% endfor %}
                             </tbody>
                     </table>
                 </div>
             </div>
+            <div class="flex space-x-4">
+                <button class="bg-blue-500 cursor-pointer hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                  Update Khata
+                </button>
+                <button class="bg-green-500 cursor-pointer hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+                  All Clear
+                </button>
+              </div>
         </div>
     </div>  
 </dib>

@@ -4,10 +4,10 @@
         <h1 class="text-2xl font-semibold text-gray-800">Delete Account</h1>
         <p class="mt-4 text-sm text-gray-600">Are you sure you want to delete your account? This action is irreversible and will remove all your data.</p>
 
-        <form method="POST" action='{% url "delete_account" %}'>
+        <form method="POST" action='{% url "setting" %}'>
             {% csrf_token %}
             <div class="mt-6">
-                <button type="submit" class="bg-red-600 text-white py-2 px-6 rounded-lg hover:bg-red-700">Yes, delete my account</button>
+                <button type="submit" name="delete_account" class="bg-red-600 text-white py-2 px-6 rounded-lg hover:bg-red-700">Yes, delete my account</button>
             </div>
         </form>
 

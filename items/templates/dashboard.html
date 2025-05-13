@@ -6,18 +6,19 @@
 <div class="flex h-screen">
   {% include "components/navbar.html" with dashboard="dashboard" %}
   <div class="flex-1 flex flex-col">
-    {% include "components/header.html" with head='Dashboard' %}
+    {% include "components/header.html" with head='Dashboard' notify=notify %}
 
     <main class="p-4 overflow-auto">
       {% include "components/finance.html" with daily=daily  %}
-      <div class="bg-white shadow-md rounded-lg p-3">
+      {% include "components/top_product_day.html" with top_products=top_products %}
+      <div class="bg-white mt-3 shadow-md rounded-lg p-3">
         <div
           class="flex flex-row justify-between items-center mb-2"
         >
           <h2 class="text-base font-semibold mb-1 sm:mb-0">Products</h2>
           <a
             href='{% url "addproduct" %}'
-            class="bg-indigo-600 text-white px-3 py-1 cursor-pointer rounded-md hover:bg-indigo-700 text-xs"
+            class="bg-indigo-600 text-white px-3 py-2 py-1 cursor-pointer rounded-md hover:bg-indigo-700 text-xs"
             >Add Product</a
           >
         </div>
@@ -31,6 +32,7 @@
                         <th class="px-2 py-1 md:px-4 md:py-2">Name</th>
                         <th class="px-2 py-1 md:px-4 md:py-2">Sell</th>
                         <th class="px-2 py-1 md:px-4 md:py-2">Left Stock</th>
+                        <th class="px-2 py-1 md:px-4 md:py-2">Profit Margin</th>
                         <th class="px-2 py-1 md:px-4 md:py-2">Actions</th>
                     </tr>
                 </thead>
@@ -51,6 +53,7 @@
                           <td class="text-center px-2 py-1 md:px-4 md:py-2">{{ product.name }}</td>
                           <td class="text-center px-2 py-1 md:px-4 md:py-2">{{ product.display_price|indian_currency }}</td>
                           <td class="text-center px-2 py-1 md:px-4 md:py-2 text-red-600">{{ product.display_remaining_stock }}</td>
+                          <td class="text-center px-2 py-1 md:px-4 md:py-2 {% if month.profit_margin_on_product|stringformat:"s"|slice:":1" == '-' %}text-red-600{% else %}text-green-600{% endif %}">{% if month.roi|stringformat:"s"|slice:":1" == '-' %}{{ product.profit_margin_on_product }}{% else %}+{{ product.profit_margin_on_product }}{% endif %}</td>
                           <td class="text-center px-2 py-1 md:px-4 md:py-2">
                             <div class="flex space-x-1 items-center justify-center">
                               <a

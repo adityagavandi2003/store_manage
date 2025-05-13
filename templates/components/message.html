@@ -1,31 +1,125 @@
 <style>
-  @keyframes slide-in {
-    from {
-      opacity: 0;
-      transform: translateX(100%);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
+  body {
+      font-family: 'Inter', sans-serif;
   }
-  .animate-slide-in {
-    animation: slide-in 0.3s ease-out forwards;
+  #toast-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 1000; /* Ensure toasts are displayed above other elements */
+      pointer-events: none; /* Allows clicks to go through the container */
+  }
+  .toast {
+      background-color: rgba(55, 65, 81, 1); /* bg-gray-700 with opacity */
+      color: #f9fafb; /* text-gray-50 */
+      padding: 16px 20px;
+      border-radius: 6px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 250px;
+      max-width: 350px;
+      animation: slideIn 0.3s ease-out, slideOut 0.3s 2.5s ease-in forwards; /* 2.5s delay before slideOut */
+      pointer-events: auto; /* Allows clicks on the toast itself */
+  }
+  .toast-success {
+      background-color: rgba(22, 163, 74, 1); /* bg-green-600 with opacity*/
+  }
+    .toast-info {
+      background-color: rgba(56, 189, 248, 1); /* bg-blue-400 with opacity*/
+  }
+
+  .toast-warning {
+      background-color: rgba(251, 146, 60, 1); /* bg-orange-500 with opacity */
+  }
+
+  .toast-error {
+      background-color: rgba(220, 38, 38, 1); /* bg-red-600 with opacity */
+  }
+  .toast-loading {
+      background-color: rgba(96, 165, 250, 1); /* bg-blue-400 with opacity */
+  }
+
+  @keyframes slideIn {
+      from {
+          transform: translateX(100%);
+          opacity: 0;
+      }
+      to {
+          transform: translateX(0);
+          opacity: 1;
+      }
+  }
+  @keyframes slideOut {
+      from {
+          transform: translateX(0);
+          opacity: 1;
+      }
+      to {
+          transform: translateX(100%);
+          opacity: 0;
+      }
+  }
+  .toast-icon {
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
   }
 </style>
 
+<div id="toast-container">
+</div>
 
 {% if messages %}
+<div id="toast-container">
   {% for message in messages %}
-    <div id="toast" class="absolute top-4 right-6 
-      {% if 'success' in message.tags %}bg-green-500 
-      {% elif 'warning' in message.tags %}bg-yellow-500 
-      {% else %}bg-red-500 
+  <div class="toast toast-{% if message.tags == 'success' %}success{% elif message.tags == 'info' %}info{% elif message.tags == 'warning' %}warning{% elif message.tags == 'error' %}error{% else %}info{% endif %}">
+      {% if message.tags == 'success' %}
+          <div class="toast-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-6 h-6 text-white">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm3.857-9.809a.75.75 0 0 0-1.08.022L7.477 12.146a.75.75 0 0 0 1.035 1.096l3.19-3.034a.75.75 0 0 0 1.08-.022z" clip-rule="evenodd" />
+              </svg>
+          </div>
+      {% elif message.tags == 'info' %}
+          <div class="toast-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-white">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25v-2.25a.75.75 0 0 1 .75-.75h.75a.75.75 0 0 1 .75.75v2.25m-1.5 0-3-3m3 3 3-3m-3 12a2.25 2.25 0 0 1-2.25-2.25.75.75 0 0 1 1.5 0A.75.75 0 0 0 12 15.75a2.25 2.25 0 0 1 2.25-2.25.75.75 0 0 1 1.5 0A2.25 2.25 0 0 1 12 18Z" />
+              </svg>
+          </div>
+      {% elif message.tags == 'warning' %}
+          <div class="toast-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-6 h-6 text-white">
+                  <path fill-rule="evenodd" d="M8.09 2.543a1.5 1.5 0 0 1 1.82-.318l7.7 4.21a1.5 1.5 0 0 1 1.03 1.803l-7.7 14.002a1.5 1.5 0 0 1-2.967 0l-7.7-14a1.5 1.5 0 0 1 1.03-1.8l7.7-4.21a1.5 1.5 0 0 1 .318 1.819zM9 6a1 1 0 0 0-1 1v4a1 1 0 1 0 2 0V7a1 1 0 0 0-1-1zm1 10a1 1 0 1 0-2 0v2a1 1 0 1 0 2 0v-2z" clip-rule="evenodd" />
+              </svg>
+          </div>
+      {% elif message.tags == 'error' %}
+          <div class="toast-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-6 h-6 text-white">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16zM8.087 5.944a.75.75 0 0 0-1.06-1.06L6 6.94 3.944 4.884a.75.75 0 0 0-1.06 1.06L4.94 8 2.884 10.056a.75.75 0 0 0 1.06 1.06L6 9.06l2.056 2.056a.75.75 0 0 0 1.06-1.06L7.06 8l2.056-2.056z" clip-rule="evenodd" />
+              </svg>
+          </div>
+      {% else %}
+          <div class="toast-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 animate-spin text-white">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+              </svg>
+          </div>
       {% endif %}
-      text-white px-6 py-3 rounded shadow-lg z-50 animate-slide-in hidden">
-      {{ message }}
-    </div>
+      <div>
+          <h3 class="font-semibold text-white">
+              {% if message.tags == 'success' %}Success!{% elif message.tags == 'warning' %}Warning!{% elif message.tags == 'error' %}Error!{% else %}Info!{% endif %}
+          </h3>
+          <p class="text-gray-200 text-sm">{{ message }}</p>
+      </div>
+  </div>
   {% endfor %}
+</div>
 {% endif %}
 
 

@@ -46,3 +46,4 @@ class KhataView(LoginRequiredMixin,View):
             'orders':order_items,
         }
         return render(request,'khataaccount.html',context)
+    
