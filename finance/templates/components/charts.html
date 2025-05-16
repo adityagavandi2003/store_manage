@@ -14,7 +14,6 @@
                 <h4 class="text-md font-semibold text-gray-700">Revenue</h4>
                 <span class="font-medium text-sm {% if month.profit|stringformat:"s"|slice:":1" == '-' %}text-red-600{% else %}text-green-600{% endif %}">{% if month.profit|stringformat:"s"|slice:":1" == '-' %}{{month.profit_margin}}{% else %}+{{month.profit_margin}}{% endif %}%</span>
             </div>
-            <div class="text-2xl font-bold text-blue-700 mb-4">{{month.total_sales|indian_currency}}</div>
             <div class="w-full max-w-[600px] h-[300px] mx-auto relative">
                 <canvas id="revenueChart"></canvas>
             </div>
@@ -24,7 +23,6 @@
             <div class="flex items-center justify-between mb-3">
                 <h4 class="text-md font-semibold text-gray-700">Top Products</h4>
             </div>
-            <div class="text-2xl font-bold text-green-500 mb-4">{% if month.profit %}{{ order|length }}{% endif %}</div>
             <div class="w-full max-w-[600px] h-[300px] mx-auto relative">
                 <canvas id="productsChart"></canvas>
             </div>

@@ -39,7 +39,8 @@ class KhataView(LoginRequiredMixin,View):
                     'product_name':item.product_name,
                     'product_price':item.product_price,
                     'product_quantity':item.quantity,
-                    'product_subtotal':item.subtotal
+                    'product_subtotal':item.subtotal,
+                    'order_at':item.created_at
                 })
         context = {
             'khata':total_due,

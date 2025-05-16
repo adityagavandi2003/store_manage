@@ -31,6 +31,7 @@
                                 <th class="py-2 px-4 text-center text-gray-600 font-semibold">Quantity</th>
                                 <th class="py-2 px-4 text-center text-gray-600 font-semibold">Price</th>
                                 <th class="py-2 px-4 text-center text-gray-600 font-semibold">Subtotal</th>
+                                <th class="py-2 px-4 text-center text-gray-600 font-semibold">Date</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -40,6 +41,7 @@
                                     <td class="py-2 px-4 border-b text-center text-gray-700">{{order.product_quantity }}</td>
                                     <td class="py-2 px-4 border-b text-center text-gray-700">{{order.product_price }}</td>
                                     <td class="py-2 px-4 border-b text-center text-gray-700">{{order.product_subtotal}}</td>
+                                    <td class="py-2 px-4 border-b text-center text-gray-700">{{order.order_at}}</td>
                                 </tr>
                             {% endfor %}
                             </tbody>
