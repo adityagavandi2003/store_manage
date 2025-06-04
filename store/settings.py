@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 from dotenv import load_dotenv
 import os
+from celery.schedules import crontab
 
 load_dotenv()
 
@@ -64,7 +65,10 @@ INSTALLED_APPS = [
     # tailwind
     'tailwind',
     'theme',
-    'django_browser_reload',
+    # 'django_browser_reload',
+
+    # celery
+    'django_celery_results',
 ]
 
 SITE_ID = 1
@@ -85,7 +89,7 @@ MIDDLEWARE = [
     "allauth.account.middleware.AccountMiddleware",# Add the account middleware
 
     # django-reload
-    'django_browser_reload.middleware.BrowserReloadMiddleware',
+    # 'django_browser_reload.middleware.BrowserReloadMiddleware',
 ]
 
 ROOT_URLCONF = 'store.urls'
@@ -232,4 +236,21 @@ SOCIALACCOUNT_PROVIDERS = {
             'key': ''
         }
     }
+}
+
+# Celery Configuration Options
+CELERY_RESULT_BACKEND = 'django-db'
+CELERY_BROKER_URL  = 'redis://redis:6379/0'  
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_TIMEZONE = "Asia/Kolkata"
+
+# extends task result attributes
+CELERY_RESULT_EXTENDED = True
+
+CELERY_BEAT_SCHEDULE = {
+    'create-month-finance-eom': {
+        'task': 'finance.tasks.create_month_finance_for_all_shops',
+        'schedule': crontab(hour=21, minute=59),
+    },
 }

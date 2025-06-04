@@ -9,10 +9,18 @@ from reportlab.platypus import Table, TableStyle
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from io import BytesIO
+from django.conf import settings
+from django.utils.timezone import now
+import os
+from django.core.files.base import ContentFile
+from PIL import Image
 
-# Correct absolute font path
-DejaVuSans = r"D:\visualcode\Workspacse\Django\store_manage\fonts\DejaVuSans.ttf"
-DejaVuSans_Bold = r"D:\visualcode\Workspacse\Django\store_manage\fonts\DejaVuSans-Bold.ttf"
+from users.models import Notification
+
+
+DejaVuSans = os.path.join(settings.BASE_DIR, "static", "assets", "fonts", "DejaVuSans.ttf")
+DejaVuSans_Bold = os.path.join(settings.BASE_DIR, "static", "assets", "fonts", "DejaVuSans-Bold.ttf")
+
 
 pdfmetrics.registerFont(TTFont("DejaVuSans", DejaVuSans))  # font
 pdfmetrics.registerFont(TTFont("DejaVuSans-Bold", DejaVuSans_Bold))  # font
@@ -121,3 +129,30 @@ def to_decimal_safe(value):
         return Decimal(value or 0)
     except (InvalidOperation, TypeError):
         return Decimal('0.00')
+
+def compress_image_to_target_size(image_file, target_kb=100):
+    """Compress an image file to under target_kb and return ContentFile."""
+    img = Image.open(image_file)
+    if img.mode in ("RGBA", "P"):
+        img = img.convert("RGB")
+
+    quality = 95
+    buffer = BytesIO()
+    img.save(buffer, format="JPEG", optimize=True, quality=quality)
+
+    while buffer.tell() > target_kb * 1024 and quality > 10:
+        quality -= 5
+        buffer.seek(0)
+        buffer.truncate()
+        img.save(buffer, format="JPEG", optimize=True, quality=quality)
+
+    return ContentFile(buffer.getvalue(), name=image_file.name)
+
+def create_notification(shop_id, message, task_id=None):
+    Notification.objects.create(
+        shop_id=shop_id,
+        notification_type="finance",
+        message=message,
+        task_id=task_id,
+        created_at=now()
+    )

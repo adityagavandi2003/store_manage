@@ -1,0 +1,45 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pyc
+*.pyo
+
+# Virtual environments
+venv/
+env/
+ENV/
+*.env
+*.venv
+
+# Django static/media files (optional)
+staticfiles/
+media/
+
+# VSCode and IDEs
+.vscode/
+.idea/
+*.swp
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Docker
+.dockerignore
+Dockerfile*
+docker-compose*
+
+# Node (if using npm/yarn for frontend)
+node_modules/
+*.log
+
+# Other
+*.sqlite3
+*.log
+*.bak

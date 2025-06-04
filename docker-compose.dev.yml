@@ -1,0 +1,68 @@
+services:
+  django:
+    build: 
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: django
+    command: /bin/bash -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    depends_on:
+      - mysql_db
+      - redis
+    environment:
+      - REDIS_URL=redis://redis:6379/0 
+
+  celery:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: celery-worker
+    command: celery -A store worker -l info
+    volumes:
+      - .:/app
+    depends_on:
+      - redis
+      - django
+  
+  celery_beat:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: celery-beat
+    command: celery -A store beat -l info
+    volumes:
+      - .:/app
+    depends_on:
+      - redis 
+      - django
+
+  mysql_db:
+    image: mysql:8.0
+    restart: always
+    container_name: database
+    environment:
+      MYSQL_DATABASE: storesathi
+      MYSQL_USER: aditya
+      MYSQL_PASSWORD: admin@aditya
+      MYSQL_ROOT_PASSWORD: root@aditya0861  
+    ports:
+    - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  redis:
+    image: redis/redis-stack:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+      - "8001:8001"
+  
+volumes:
+  mysql_data:
+    
+  

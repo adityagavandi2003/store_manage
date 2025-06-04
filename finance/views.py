@@ -16,6 +16,7 @@ from decimal import Decimal
 from django.core.paginator import Paginator
 from django.db.models.functions import TruncDate
 import calendar
+
 # Create your views here.
 
 # store all finance summary here to access easily
@@ -161,7 +162,6 @@ class FinanceDashboard(LoginRequiredMixin, FinanceSummary, View):
             try:
                 year_search, month_search = fullmonth.split('-')
                 data = self.get_finance_data(shop=shop, mode='monthly', month=int(month_search), year=int(year_search))
-                print(data)
                 search_context = {'month': month_search, 'year': year_search}
             except ValueError:
                 data = None

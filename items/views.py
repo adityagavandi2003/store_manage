@@ -19,7 +19,7 @@ from django.contrib.auth.models import User
 import uuid
 import razorpay
 from store import settings
-from store.utils import generate_invoice,download_file
+from store.utils import generate_invoice,download_file,compress_image_to_target_size
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 # Create your views here.
@@ -152,6 +152,10 @@ class Add_Product(LoginRequiredMixin, View):
             product = form.save(commit=False)
             product.listed_by = request.user
             product.r_stock_unit = product.stock_unit
+            # Compress the image before assigning
+            uploaded_image = form.cleaned_data['images']
+            compressed_image = compress_image_to_target_size(uploaded_image, target_kb=100)
+            product.images.save(uploaded_image.name, compressed_image, save=False)
             product.save()
             messages.success(request, '✅ Product added successfully!')
             return redirect('/product/add/')

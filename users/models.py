@@ -36,6 +36,7 @@ class Notification(models.Model):
         ('stock', 'Stock Alert'),
         ('turnover', 'Monthly Turnover'),
         ('info', 'General Info'),
+        ('finance', 'Finance Update'),
         ('greet', 'Greet'),
         ('update', 'Update'),
     )
@@ -43,6 +44,7 @@ class Notification(models.Model):
     message = models.TextField()
     notification_type = models.CharField(max_length=20, choices=TYPE_CHOICES)
     is_read_by = models.ManyToManyField(User, related_name='read_notifications', blank=True)
+    task_id = models.CharField(max_length=100, blank=True, null=True)
     created_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):

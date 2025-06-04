@@ -2,11 +2,12 @@ from datetime import date, datetime, time
 from decimal import Decimal
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from django.utils.timezone import make_aware, get_current_timezone
+from django.utils.timezone import make_aware, get_current_timezone,now
 from finance.models import DailyFinanceSummary, FinanceRecord
 from items.models import Order, Product
 from store.utils import to_decimal_safe
-from khatabook.models import KhataBook
+from finance.tasks import handle_order_finance
+from store.utils import create_notification
 
 tz = get_current_timezone()
 
@@ -16,35 +17,9 @@ tz = get_current_timezone()
 @receiver(post_save, sender=Order)
 def update_finance_on_order(sender, instance, created, **kwargs):
     if created:
-        shop = instance.shop
-        order_date = instance.order_at.date() if instance.order_at else datetime.now(tz).date()
-        start = make_aware(datetime.combine(order_date, time(6, 0)), timezone=tz)
-
-        # Get or create the daily finance record
-        finance, created = DailyFinanceSummary.objects.get_or_create(
-            shop=shop,
-            recorded_at=start,
-            defaults={
-                'total_sales': Decimal('0.00'),
-                'total_expenses': Decimal('0.00'),
-                'other_income': Decimal('0.00'),
-            }
-        )
-
-        # Update total sales and calculate profit
-        finance.total_sales = to_decimal_safe(finance.total_sales) + to_decimal_safe(instance.total_amount)
-        finance.calculate_profit()
-        finance.save()
-        try:
-          if instance.payment_mode == 'KhataBook':
-              KhataBook.objects.get_or_create(
-                  shop=shop,
-                  order=instance,
-                  customer_name=instance.customer,
-                  total_khata_amount=instance.total_amount,
-              )
-        except Exception as e:
-          print('An exception occurred',e)
+        shop = instance.shop.id
+        task = handle_order_finance.delay(instance.order_id)
+        create_notification(shop,message="Finance update Successfully.",task_id=task.id)
 
 # ---------------------------------------------
 # Signal: Triggered when a new product is added
