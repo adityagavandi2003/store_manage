@@ -82,7 +82,7 @@
             </form>
 
             {% if SOCIALACCOUNT_ENABLED %}
-                {% include "socilaaccount/snippets/login.html" %}
+                    {% include "socialaccount/snippets/login.html" with page_layout="entrance" %}
             {% endif %}
             </div>
         </div>

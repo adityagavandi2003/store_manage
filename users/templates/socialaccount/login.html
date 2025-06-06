@@ -1,0 +1,49 @@
+{% extends "socialaccount/base_entrance.html" %}
+{% load i18n %}
+{% load allauth %}
+
+{% block head_title %}
+    {% trans "Sign In" %}
+{% endblock head_title %}
+
+{% block content %}
+<script src="https://cdn.tailwindcss.com"></script>
+
+<div class="min-h-screen flex items-center justify-center bg-gray-100 px-4">
+    <div class="w-full max-w-md bg-white p-8 rounded-xl shadow-md text-center">
+        <div class="flex justify-center mb-4">
+            {% if provider.id == "google" %}
+                <img src="https://www.svgrepo.com/show/506498/google.svg" class="h-10 w-10" alt="Google Logo">
+            {% elif provider.id == "facebook" %}
+                <img src="https://www.svgrepo.com/show/512120/facebook-176.svg" class="h-10 w-10" alt="Facebook Logo">
+            {% else %}
+                <span class="text-xl font-bold capitalize">{{ provider.name }}</span>
+            {% endif %}
+        </div>
+
+        {% if process == "connect" %}
+            <h1 class="text-2xl font-bold text-gray-800 mb-2">
+                {% blocktrans with provider.name as provider %}Connect {{ provider }}{% endblocktrans %}
+            </h1>
+            <p class="text-gray-600 mb-6">
+                {% blocktrans with provider.name as provider %}You are about to connect a new third-party account from {{ provider }}.{% endblocktrans %}
+            </p>
+        {% else %}
+            <h1 class="text-2xl font-bold text-gray-800 mb-2">
+                {% blocktrans with provider.name as provider %}Sign In Via {{ provider }}{% endblocktrans %}
+            </h1>
+            <p class="text-gray-600 mb-6">
+                {% blocktrans with provider.name as provider %}You are about to sign in using a third-party account from {{ provider }}.{% endblocktrans %}
+            </p>
+        {% endif %}
+
+        <form method="post" class="space-y-4">
+            {% csrf_token %}
+            <button type="submit"
+                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md shadow">
+                {% trans "Continue" %}
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock content %}

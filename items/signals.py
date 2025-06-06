@@ -1,23 +1,23 @@
-from items.models import Order, OrderItem
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from .models import OrderItem, Order
+from store.utils import generate_invoice,download_file
+from .tasks import send_whatsapp_invoice_task
 
+@receiver(post_save, sender=OrderItem)
+def send_invoice_on_whatsapp(sender, instance, created, **kwargs):
+    if created:
+        order = instance.order
+        shop = order.shop
+        products = OrderItem.objects.filter(order=order)
 
+        # Generate invoice and get file URL or path
+        invoice_url = generate_invoice(order=order, user=shop, products=products)
+        # Extract only needed fields to pass to Celery (can't pass Django model instance)
+        shop_data = {
+            "customer": order.customer,
+            "customer_phone": order.customer_phone,
+        }
 
-# ---------------------------------------------
-# Signal: Triggered when a new order is created
-# ---------------------------------------------
-# @receiver(post_save,sender=OrderItem)
-# def send_invoice_on_whatsapp(sender,instance,created,*args, **kwargs):
-#     if created:
-#         shop=instance.order.shop
-#         order = instance
-        
-#         orders = Order.objects.get(order_id=order.order_id)
-
-#         products = OrderItem.objects.filter(order=orders.order_id)
-
-#         response = generate_invoice(order=orders,user=shop,products=products)
-#         print(response)
-
-
+        # Call the Celery task
+        send_whatsapp_invoice_task.delay(order.order_id, shop_data, invoice_url)
