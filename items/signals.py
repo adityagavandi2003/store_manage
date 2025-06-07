@@ -15,9 +15,10 @@ def send_invoice_on_whatsapp(sender, instance, created, **kwargs):
         invoice_url = generate_invoice(order=order, user=shop, products=products)
         # Extract only needed fields to pass to Celery (can't pass Django model instance)
         shop_data = {
+            "shop_name":order.shop.username,
             "customer": order.customer,
             "customer_phone": order.customer_phone,
         }
 
         # Call the Celery task
-        send_whatsapp_invoice_task.delay(order.order_id, shop_data, invoice_url)
+        send_whatsapp_invoice_task.delay(order.order_id, shop_data)

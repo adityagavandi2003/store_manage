@@ -33,5 +33,5 @@ urlpatterns = [
     path('invoice/<str:pk>',InvoiceView.as_view(),name='invoice'),
 
     # search
-    path('search/',SearchView.as_view(),name='search')
+    path('search/',SearchView.as_view(),name='search'),
 ]

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from items.models import Product, Order,OrderItem
+from items.models import Product, Order,OrderItem,WhatsappFeedback
 
 # Register your models here.
     
@@ -44,3 +44,7 @@ class OrderItemAdmin(admin.ModelAdmin):
     def stock_quantity_with_unit(self, obj):
         return obj.stock_quantity_with_unit
     stock_quantity_with_unit.short_description = 'Total Stock'
+
+@admin.register(WhatsappFeedback)
+class WhatsappFeedbackAdmin(admin.ModelAdmin):
+    list_display = ('phone','rating','timestamp')

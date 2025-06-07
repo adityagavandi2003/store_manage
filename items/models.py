@@ -154,7 +154,6 @@ class Order(models.Model):
     payment_mode = models.CharField(max_length=50)
     order_at = models.DateTimeField(default=timezone.now)
 
-    
     def __str__(self):
         return f"{self.order_id}"
 
@@ -184,3 +183,9 @@ class OrderItem(models.Model):
     def stock_quantity_with_unit(self):
         return f'{round(self.product_price,2)} {self.unit}'
 
+class WhatsappFeedback(models.Model):
+    phone = models.CharField(max_length=20)
+    rating = models.IntegerField()
+    order = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True, blank=True)
+    comments = models.TextField(blank=True, null=True)
+    timestamp = models.DateTimeField(auto_now_add=True)

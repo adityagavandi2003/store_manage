@@ -50,14 +50,17 @@ class SearchView(LoginRequiredMixin,View):
 class Dashboard(LoginRequiredMixin, View):
     def get_daily_finance_data(self, shop, day, *args, **kwargs):
         try:
+            print(day)
             daily_data = DailyFinanceSummary.objects.filter(
                 shop=shop,
                 recorded_at__gte=day
             ).first()
+            print(daily_data)
             daily_orders = Order.objects.filter(
                 shop=shop,
                 order_at__gte=day
             )
+            print(daily_orders)
             products = OrderItem.objects.filter(order__in=daily_orders).order_by('-quantity')
             return [daily_data, products, daily_orders]
 
@@ -115,7 +118,6 @@ class Dashboard(LoginRequiredMixin, View):
             'order': data[2],
         }
         return render(request, 'dashboard.html', context)
-
 
 class View_Product(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
