@@ -12,6 +12,9 @@ In today's fast-paced business environment, managing a store and keeping track o
 - **Data-Driven Insights**: Empowering businesses to make informed decisions with real-time data and analytics.  
 - **Secure Transactions**: Ensuring the safety of sensitive customer and financial data with robust security measures.  
 
+## Demo Link:
+YouTube Link : [Store Manger + Finance Tracker](https://www.youtube.com/watch?v=jf36SkdwOrgLet)
+
 ### Who Can Benefit?  
 
 - **Small Business Owners**: Simplify daily operations and focus on growing your business.  
@@ -26,7 +29,7 @@ In today's fast-paced business environment, managing a store and keeping track o
 
 ## Technical Stack: 
 - Built using Django for the backend.
-- HTML , TailwindCSS , JS for the frontend.
+- HTML, TailwindCSS, JS and Charjs(for displaying data in chart) for the frontend.
 - SQLite for the database to ensure a robust and scalable solution.  
 
 ## 🛠️ Installation  
